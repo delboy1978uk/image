@@ -1,0 +1,18 @@
+{
+    "name": "delboy1978uk/image",
+    "description": "PHP image class",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Derek McLean",
+            "email": "delboy1978uk@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload":
+    {
+        "psr-4":{
+            "Del": "src/"
+        }
+    }
+}
