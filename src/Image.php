@@ -2,6 +2,8 @@
 
 namespace Del;
 
+use Exception;
+
 class Image {
 
     /**
