@@ -8,7 +8,9 @@
             "email": "delboy1978uk@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "codeception/codeception": "^2.3"
+    },
     "autoload":
     {
         "psr-4":{
@@ -16,6 +18,5 @@
         }
     },
     "require-dev": {
-        "codeception/codeception": "^2.3"
     }
 }

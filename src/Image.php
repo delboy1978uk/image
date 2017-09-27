@@ -78,10 +78,15 @@ class Image
 
 
     /**
-     *  @param string
+     * @param bool $return either output directly
+     * @return null|string image contents
      */
-    public function output()
+    public function output($return = false)
     {
+        $contents = null;
+        if ($return) {
+            ob_start();
+        }
         switch ($this->getImageType()) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->image);
@@ -95,6 +100,10 @@ class Image
                 imagepng($this->image);
                 break;
         }
+        if ($return) {
+            $contents = ob_get_flush();
+        }
+        return $contents;
     }
 
     /**
