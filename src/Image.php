@@ -4,21 +4,16 @@ namespace Del;
 
 use Exception;
 
-class Image {
+class Image 
+{
+    /** @var resource $image */
+    private $image;
 
-    /**
-     * @var
-     */
-    protected $_image;
-    /**
-     * @var
-     */
-    protected $_image_type;
+    /** @var int $imageType */
+    private $imageType;
 
-    /**
-     *  @var string
-     */
-    protected $file_name;
+    /** @var string $fileName */
+    private $fileName;
 
 
     /**
@@ -26,8 +21,8 @@ class Image {
      */
     public function __construct($filename = null)
     {
-        if($filename){
-            $this->file_name = $filename;
+        if ($filename) {
+            $this->fileName = $filename;
             $this->load($filename);
         }
     }
@@ -39,25 +34,19 @@ class Image {
      */
     public function load($filename)
     {
-        if(!file_exists($filename))
-        {
+        if (!file_exists($filename)) {
             throw new Exception("$filename does not exist");
         }
 
-        $image_info = getimagesize($filename);
-        $this->_image_type = $image_info[2];
+        $imageInfo = getimagesize($filename);
+        $this->imageType = $imageInfo[2];
 
-        if( $this->_image_type == IMAGETYPE_JPEG )
-        {
-            $this->_image = imagecreatefromjpeg($filename);
-        }
-        elseif( $this->_image_type == IMAGETYPE_GIF )
-        {
-            $this->_image = imagecreatefromgif($filename);
-        }
-        elseif( $this->_image_type == IMAGETYPE_PNG )
-        {
-            $this->_image = imagecreatefrompng($filename);
+        if( $this->imageType == IMAGETYPE_JPEG ) {
+            $this->image = imagecreatefromjpeg($filename);
+        }  elseif( $this->imageType == IMAGETYPE_GIF ) {
+            $this->image = imagecreatefromgif($filename);
+        } elseif( $this->imageType == IMAGETYPE_PNG ) {
+            $this->image = imagecreatefrompng($filename);
         }
     }
 
@@ -69,17 +58,16 @@ class Image {
      */
     public function save($filename = null, $compression=100, $permissions=null)
     {
-        $filename = ($filename) ?: $this->file_name;
-        switch($this->getImageType())
-        {
+        $filename = ($filename) ?: $this->fileName;
+        switch ($this->getImageType()) {
             case IMAGETYPE_JPEG:
-                imagejpeg($this->_image,$filename,$compression);
+                imagejpeg($this->image,$filename,$compression);
                 break;
             case IMAGETYPE_GIF:
-                imagegif($this->_image,$filename);
+                imagegif($this->image,$filename);
                 break;
             case IMAGETYPE_PNG:
-                imagepng($this->_image,$filename);
+                imagepng($this->image,$filename);
                 break;
         }
         if( $permissions != null)
@@ -94,18 +82,17 @@ class Image {
      */
     public function output()
     {
-        switch($this->getImageType())
-        {
+        switch ($this->getImageType()) {
             case IMAGETYPE_JPEG:
-                imagejpeg($this->_image);
+                imagejpeg($this->image);
                 break;
             case IMAGETYPE_GIF:
-                imagegif($this->_image);
+                imagegif($this->image);
                 break;
             case IMAGETYPE_PNG:
-                imagealphablending($this->_image,true);
-                imagesavealpha($this->_image,true);
-                imagepng($this->_image);
+                imagealphablending($this->image,true);
+                imagesavealpha($this->image,true);
+                imagepng($this->image);
                 break;
         }
     }
@@ -115,8 +102,7 @@ class Image {
      */
     public function getWidth()
     {
-
-        return imagesx($this->_image);
+        return imagesx($this->image);
     }
 
     /**
@@ -124,28 +110,26 @@ class Image {
      */
     public function getHeight()
     {
-
-        return imagesy($this->_image);
+        return imagesy($this->image);
     }
 
     /**
-     * @param $height
+     * @param int $height
      */
     public function resizeToHeight($height)
     {
-
         $ratio = $height / $this->getHeight();
         $width = $this->getWidth() * $ratio;
         $this->resize($width,$height);
     }
 
     /**
-     * @param $width
+     * @param int $width
      */
     public function resizeToWidth($width)
     {
         $ratio = $width / $this->getWidth();
-        $height = $this->getheight() * $ratio;
+        $height = $this->getHeight() * $ratio;
         $this->resize($width,$height);
     }
 
@@ -155,20 +139,23 @@ class Image {
     public function scale($scale)
     {
         $width = $this->getWidth() * $scale/100;
-        $height = $this->getheight() * $scale/100;
+        $height = $this->getHeight() * $scale/100;
         $this->resize($width,$height);
     }
 
-
+    /**
+     * @param int $width
+     * @param int $height
+     */
     public function resizeAndCrop($width,$height)
     {
         $target_ratio = $width / $height;
         $actual_ratio = $this->getWidth() / $this->getHeight();
 
-        if($target_ratio == $actual_ratio){
+        if ($target_ratio == $actual_ratio){
             // Scale to size
             $this->resize($width,$height);
-        } elseif($target_ratio > $actual_ratio) {
+        } elseif ($target_ratio > $actual_ratio) {
             // Resize to width, crop extra height
             $this->resizeToWidth($width);
             $this->crop($width,$height,true);
@@ -187,56 +174,50 @@ class Image {
      */
     public function resize($width,$height)
     {
-
-        $new_image = imagecreatetruecolor($width, $height);
-        if ( ($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG) )
-        {
+        $newImage = imagecreatetruecolor($width, $height);
+        if ( ($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG) ) {
             // Get transparency color's index number
-            $transparency = imagecolortransparent($this->_image);
+            $transparency = imagecolortransparent($this->image);
 
             // Transparent Gifs have index > 0
             // Transparent Png's have index -1
-            if ($transparency >= 0)
-            {
+            if ($transparency >= 0) {
                 // Get the array of RGB vals for the transparency index
-                $transparent_color = imagecolorsforindex($this->_image, $transparency);
+                $transparentColor = imagecolorsforindex($this->image, $transparency);
 
                 // Now allocate the color
-                $transparency = imagecolorallocate($new_image, $transparent_color['red'], $transparent_color['green'], $transparent_color['blue']);
+                $transparency = imagecolorallocate($newImage, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
 
                 // Fill the background with the color
-                imagefill($new_image, 0, 0, $transparency);
+                imagefill($newImage, 0, 0, $transparency);
 
                 // And set that color as the transparent one
-                imagecolortransparent($new_image, $transparency);
-            }
-            // Or, if its a PNG
-            elseif ($this->getImageType() == IMAGETYPE_PNG)
-            {
+                imagecolortransparent($newImage, $transparency);
+            }  elseif ($this->getImageType() == IMAGETYPE_PNG) {
                 // Set blending mode as false
-                imagealphablending($new_image, false);
+                imagealphablending($newImage, false);
 
                 // Tell it we want to save alpha channel info
-                imagesavealpha($new_image, true);
+                imagesavealpha($newImage, true);
 
                 // Set the transparent color
-                $color = imagecolorallocatealpha($new_image, 0, 0, 0, 127);
+                $color = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
 
                 // Fill the image with nothingness
-                imagefill($new_image, 0, 0, $color);
+                imagefill($newImage, 0, 0, $color);
             }
         }
         // Now resample the image
-        imagecopyresampled($new_image, $this->_image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+        imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
 
         // And allocate to $this
-        $this->_image = $new_image;
+        $this->image = $newImage;
     }
 
 
     /**
-     * @param $width
-     * @param $height
+     * @param int $width
+     * @param int $height
      * @param string $trim
      */
     function crop($width,$height, $trim = 'center')
@@ -246,61 +227,50 @@ class Image {
         $current_width = $this->getWidth();
         $current_height = $this->getHeight();
 
-        if($trim != 'left')
-        {
-            if($current_width > $width) {
+        if ($trim != 'left') {
+            if ($current_width > $width) {
                 $diff = $current_width - $width;
                 $offset_x = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
             }
-            if($current_height > $height) {
+            if ($current_height > $height) {
                 $diff = $current_height - $height;
                 $offset_y = ($trim = 'center') ? $diff / 2 : $diff;
             }
         }
 
-        $new_image = imagecreatetruecolor($width,$height);
-        imagecopyresampled($new_image,$this->_image,0,0,$offset_x,$offset_y,$width,$height,$width,$height);
-        $this->_image = $new_image;
+        $newImage = imagecreatetruecolor($width,$height);
+        imagecopyresampled($newImage, $this->image, 0, 0, $offset_x, $offset_y, $width, $height, $width, $height);
+        $this->image = $newImage;
     }
-
-
-
 
     /**
      * @return mixed
      */
     public function getImageType()
     {
-        return $this->_image_type;
+        return $this->imageType;
     }
-
 
     /**
      * @return string
      */
     public function getHeader()
     {
-        if( $this->_image_type == IMAGETYPE_JPEG )
-        {
+        if( $this->imageType == IMAGETYPE_JPEG ) {
             return 'image/jpeg';
-        }
-        elseif( $this->_image_type == IMAGETYPE_GIF )
-        {
+        } elseif( $this->imageType == IMAGETYPE_GIF ) {
             return 'image/gif';
-        }
-        elseif( $this->_image_type == IMAGETYPE_PNG )
-        {
+        } elseif( $this->imageType == IMAGETYPE_PNG ) {
             return 'image/png';
         }
         return null;
     }
-
 
     /**
      *  Free's up memory
      */
     public function destroy()
     {
-        imagedestroy($this->_image);
+        imagedestroy($this->image);
     }
 }
