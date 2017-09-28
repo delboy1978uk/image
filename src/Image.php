@@ -4,6 +4,10 @@ namespace Del;
 
 use Del\Image\Exception\NotFoundException;
 use Del\Image\Exception\NothingLoadedException;
+use Del\Image\Strategy\GifStrategy;
+use Del\Image\Strategy\ImageTypeStrategyInterface;
+use Del\Image\Strategy\JpegStrategy;
+use Del\Image\Strategy\PngStrategy;
 
 class Image 
 {
@@ -16,25 +20,14 @@ class Image
     /** @var string $fileName */
     private $fileName;
 
-    /** @var array  */
-    private $contentType = [
-        IMAGETYPE_JPEG => 'image/jpeg',
-        IMAGETYPE_GIF => 'image/gif',
-        IMAGETYPE_PNG =>'image/png',
-    ];
+    /** @var ImageTypeStrategyInterface $strategy */
+    private $strategy;
 
-    /** @var array  */
-    private $createCommand = [
-        IMAGETYPE_JPEG => 'imagecreatefromjpeg',
-        IMAGETYPE_GIF => 'imagecreatefromgif',
-        IMAGETYPE_PNG =>'imagecreatefrompng',
-    ];
-
-    /** @var array  */
-    private $saveMethod = [
-        IMAGETYPE_JPEG => 'saveJpg',
-        IMAGETYPE_GIF => 'saveGif',
-        IMAGETYPE_PNG => 'savePng',
+    /** @var array $strategies */
+    private $strategies = [
+        IMAGETYPE_JPEG => JpegStrategy::class,
+        IMAGETYPE_GIF => GifStrategy::class,
+        IMAGETYPE_PNG => PngStrategy::class,
     ];
 
     /**
@@ -69,7 +62,8 @@ class Image
         $this->checkFileExists($filename);
         $imageInfo = getimagesize($filename);
         $this->imageType = $imageInfo[2];
-        $this->image = $this->createCommand[$this->imageType]($filename);
+        $this->strategy = new $this->strategies[$this->imageType]();
+        $this->image = $this->strategy->create($filename);
     }
 
 
@@ -81,38 +75,8 @@ class Image
     public function save($filename = null, $compression = 100, $permissions = null)
     {
         $filename = ($filename) ?: $this->fileName;
-        $method = $this->saveMethod[$this->imageType];
-        $this->$method($filename, $compression);
+        $this->strategy->save($this->image, $filename, $compression);
         $this->setPermissions($filename, $permissions);
-    }
-
-    /**
-     * @param $filename
-     * @param $compression
-     */
-    private function saveJpg($filename, $compression)
-    {
-        imagejpeg($this->image, $filename, $compression);
-    }
-
-    /**
-     * @param $filename
-     * @param $compression
-     */
-    private function saveGif($filename, $compression)
-    {
-        unset($compression);
-        imagegif($this->image, $filename);
-    }
-
-    /**
-     * @param $filename
-     * @param $compression
-     */
-    private function savePng($filename, $compression)
-    {
-        unset($compression);
-        imagepng($this->image, $filename);
     }
 
     /**
@@ -379,10 +343,10 @@ class Image
      */
     public function getHeader()
     {
-        if (!$this->imageType) {
+        if (!$this->strategy) {
             throw new NothingLoadedException();
         }
-        return $this->contentType[$this->imageType];
+        return $this->strategy->getContentType();
     }
 
     /**
