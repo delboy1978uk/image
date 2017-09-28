@@ -168,7 +168,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeToWidth(100);
         $output = md5($image->output(true));
-        $this->assertEquals('', $output);
+        $this->assertEquals('9473454bc1dd0935c5c7d552652f4606', $output);
     }
 
     public function testResizeGif()
@@ -178,7 +178,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeToWidth(100);
         $output = md5($image->output(true));
-        $this->assertEquals('', $output);
+        $this->assertEquals('dcd679257efa0ee6e5773d740412ab2e', $output);
     }
 
     public function testResizeToHeight()
