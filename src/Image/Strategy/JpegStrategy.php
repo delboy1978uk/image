@@ -41,6 +41,4 @@ class JpegStrategy implements ImageTypeStrategyInterface
     {
         return;
     }
-
-
 }

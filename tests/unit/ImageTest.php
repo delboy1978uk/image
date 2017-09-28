@@ -161,6 +161,16 @@ class ImageTest extends Unit
         $this->assertEquals('4c35a3f2a089531333568afa1b5daaac', $output);
     }
 
+    public function testResizeJpg()
+    {
+        $path = 'tests/_data/sonsofanarchy.jpg';
+        $image = new Image();
+        $image->load($path);
+        $image->resizeToWidth(100);
+        $output = md5($image->output(true));
+        $this->assertEquals('', $output);
+    }
+
     public function testResizeToHeight()
     {
         $path = 'tests/_data/troll.png';
