@@ -225,7 +225,7 @@ class Image
                 // deal with alpha channels
                 $this->prepWithExistingIndex($newImage, $transparency);
 
-            }  elseif ($this->getImageType() == IMAGETYPE_PNG) {
+            } elseif ($this->getImageType() == IMAGETYPE_PNG) {
 
                 // deal with alpha channels
                 $this->prepTransparentPng($newImage);
