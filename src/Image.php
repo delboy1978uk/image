@@ -22,8 +22,14 @@ class Image
         IMAGETYPE_PNG =>'image/png',
     ];
 
+    private $createCommand = [
+        IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+        IMAGETYPE_GIF => 'imagecreatefromgif',
+        IMAGETYPE_PNG =>'imagecreatefrompng',
+    ];
+
     /**
-     * @param null $filename
+     * @param string $filename
      */
     public function __construct($filename = null)
     {
@@ -50,14 +56,7 @@ class Image
         $this->checkFileExists($filename);
         $imageInfo = getimagesize($filename);
         $this->imageType = $imageInfo[2];
-
-        if( $this->imageType == IMAGETYPE_JPEG ) {
-            $this->image = imagecreatefromjpeg($filename);
-        }  elseif( $this->imageType == IMAGETYPE_GIF ) {
-            $this->image = imagecreatefromgif($filename);
-        } elseif( $this->imageType == IMAGETYPE_PNG ) {
-            $this->image = imagecreatefrompng($filename);
-        }
+        $this->image = $this->createCommand[$this->imageType]($filename);
     }
 
 
@@ -70,7 +69,7 @@ class Image
     {
         $filename = ($filename) ?: $this->fileName;
 
-        switch ($this->getImageType()) {
+        switch ($this->imageType) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->image, $filename, $compression);
                 break;
@@ -82,6 +81,15 @@ class Image
                 break;
         }
 
+        $this->setPermissions($filename, $permissions);
+    }
+
+    /**
+     * @param $filename
+     * @param $permissions
+     */
+    private function setPermissions($filename, $permissions)
+    {
         if( $permissions !== null) {
             chmod($filename, (int) $permissions);
         }
@@ -90,15 +98,25 @@ class Image
 
     /**
      * @param bool $return either output directly
-     * @return null|string image contents
+     * @return void|string image contents
      */
     public function output($return = false)
     {
-        $contents = null;
         if ($return) {
             ob_start();
         }
-        switch ($this->getImageType()) {
+
+        $this->renderImage();
+
+        if ($return) {
+            $contents = ob_get_flush();
+            return $contents;
+        }
+    }
+
+    private function renderImage()
+    {
+        switch ($this->imageType) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->image);
                 break;
@@ -111,10 +129,6 @@ class Image
                 imagepng($this->image);
                 break;
         }
-        if ($return) {
-            $contents = ob_get_flush();
-        }
-        return $contents;
     }
 
     /**
