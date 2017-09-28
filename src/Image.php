@@ -2,7 +2,8 @@
 
 namespace Del;
 
-use Exception;
+use Del\Image\Exception\NotFoundException;
+use Del\Image\Exception\NothingLoadedException;
 
 class Image 
 {
@@ -15,6 +16,11 @@ class Image
     /** @var string $fileName */
     private $fileName;
 
+    private $contentType = [
+        IMAGETYPE_JPEG => 'image/jpeg',
+        IMAGETYPE_GIF => 'image/gif',
+        IMAGETYPE_PNG =>'image/png',
+    ];
 
     /**
      * @param null $filename
@@ -27,17 +33,21 @@ class Image
         }
     }
 
+    private function checkFileExists($path)
+    {
+        if (!file_exists($path)) {
+            throw new NotFoundException("$path does not exist");
+        }
+    }
+
 
     /**
      * @param $filename
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function load($filename)
     {
-        if (!file_exists($filename)) {
-            throw new Exception("$filename does not exist");
-        }
-
+        $this->checkFileExists($filename);
         $imageInfo = getimagesize($filename);
         $this->imageType = $imageInfo[2];
 
@@ -59,20 +69,21 @@ class Image
     public function save($filename = null, $compression=100, $permissions=null)
     {
         $filename = ($filename) ?: $this->fileName;
+
         switch ($this->getImageType()) {
             case IMAGETYPE_JPEG:
-                imagejpeg($this->image,$filename,$compression);
+                imagejpeg($this->image, $filename, $compression);
                 break;
             case IMAGETYPE_GIF:
-                imagegif($this->image,$filename);
+                imagegif($this->image, $filename);
                 break;
             case IMAGETYPE_PNG:
-                imagepng($this->image,$filename);
+                imagepng($this->image, $filename);
                 break;
         }
-        if( $permissions != null)
-        {
-            chmod($filename,$permissions);
+
+        if( $permissions != null) {
+            chmod($filename, $permissions);
         }
     }
 
@@ -143,12 +154,12 @@ class Image
     }
 
     /**
-     * @param $scale
+     * @param int $scale %
      */
     public function scale($scale)
     {
-        $width = $this->getWidth() * $scale/100;
-        $height = $this->getHeight() * $scale/100;
+        $width = $this->getWidth() * $scale / 100;
+        $height = $this->getHeight() * $scale / 100;
         $this->resize($width,$height);
     }
 
@@ -158,13 +169,13 @@ class Image
      */
     public function resizeAndCrop($width,$height)
     {
-        $target_ratio = $width / $height;
-        $actual_ratio = $this->getWidth() / $this->getHeight();
+        $targetRatio = $width / $height;
+        $actualRatio = $this->getWidth() / $this->getHeight();
 
-        if ($target_ratio == $actual_ratio){
+        if ($targetRatio == $actualRatio) {
             // Scale to size
             $this->resize($width,$height);
-        } elseif ($target_ratio > $actual_ratio) {
+        } elseif ($targetRatio > $actualRatio) {
             // Resize to width, crop extra height
             $this->resizeToWidth($width);
             $this->crop($width,$height,true);
@@ -184,43 +195,67 @@ class Image
     public function resize($width,$height)
     {
         $newImage = imagecreatetruecolor($width, $height);
+
         if ( ($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG) ) {
+
             // Get transparency color's index number
             $transparency = imagecolortransparent($this->image);
 
-            // Transparent Gifs have index > 0
-            // Transparent Png's have index -1
+            // Is a strange index other than -1 set?
             if ($transparency >= 0) {
-                // Get the array of RGB vals for the transparency index
-                $transparentColor = imagecolorsforindex($this->image, $transparency);
 
-                // Now allocate the color
-                $transparency = imagecolorallocate($newImage, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
+                // deal with alpha channels
+                $this->prepWithExistingIndex($newImage, $transparency);
 
-                // Fill the background with the color
-                imagefill($newImage, 0, 0, $transparency);
-
-                // And set that color as the transparent one
-                imagecolortransparent($newImage, $transparency);
             }  elseif ($this->getImageType() == IMAGETYPE_PNG) {
-                // Set blending mode as false
-                imagealphablending($newImage, false);
 
-                // Tell it we want to save alpha channel info
-                imagesavealpha($newImage, true);
-
-                // Set the transparent color
-                $color = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
-
-                // Fill the image with nothingness
-                imagefill($newImage, 0, 0, $color);
+                // deal with alpha channels
+                $this->prepTransparentPng($newImage);
             }
         }
+
         // Now resample the image
         imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
 
         // And allocate to $this
         $this->image = $newImage;
+    }
+
+    /**
+     * @param $resource
+     * @param $index
+     */
+    private function prepWithExistingIndex($resource, $index)
+    {
+        // Get the array of RGB vals for the transparency index
+        $transparentColor = imagecolorsforindex($this->image, $index);
+
+        // Now allocate the color
+        $transparency = imagecolorallocate($resource, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
+
+        // Fill the background with the color
+        imagefill($resource, 0, 0, $transparency);
+
+        // And set that color as the transparent one
+        imagecolortransparent($resource, $transparency);
+    }
+
+    /**
+     * @param $resource
+     */
+    private function prepTransparentPng($resource)
+    {
+        // Set blending mode as false
+        imagealphablending($resource, false);
+
+        // Tell it we want to save alpha channel info
+        imagesavealpha($resource, true);
+
+        // Set the transparent color
+        $color = imagecolorallocatealpha($resource, 0, 0, 0, 127);
+
+        // Fill the image with nothingness
+        imagefill($resource, 0, 0, $color);
     }
 
 
@@ -231,24 +266,24 @@ class Image
      */
     function crop($width,$height, $trim = 'center')
     {
-        $offset_x = 0;
-        $offset_y = 0;
-        $current_width = $this->getWidth();
-        $current_height = $this->getHeight();
+        $offsetX = 0;
+        $offsetY = 0;
+        $currentWidth = $this->getWidth();
+        $currentHeight = $this->getHeight();
 
         if ($trim != 'left') {
-            if ($current_width > $width) {
-                $diff = $current_width - $width;
-                $offset_x = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
+            if ($currentWidth > $width) {
+                $diff = $currentWidth - $width;
+                $offsetX = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
             }
-            if ($current_height > $height) {
-                $diff = $current_height - $height;
-                $offset_y = ($trim = 'center') ? $diff / 2 : $diff;
+            if ($currentHeight > $height) {
+                $diff = $currentHeight - $height;
+                $offsetY = ($trim = 'center') ? $diff / 2 : $diff;
             }
         }
 
         $newImage = imagecreatetruecolor($width,$height);
-        imagecopyresampled($newImage, $this->image, 0, 0, $offset_x, $offset_y, $width, $height, $width, $height);
+        imagecopyresampled($newImage, $this->image, 0, 0, $offsetX, $offsetY, $width, $height, $width, $height);
         $this->image = $newImage;
     }
 
@@ -261,22 +296,19 @@ class Image
     }
 
     /**
-     * @return string
+     * @return mixed
+     * @throws NothingLoadedException
      */
     public function getHeader()
     {
-        if( $this->imageType == IMAGETYPE_JPEG ) {
-            return 'image/jpeg';
-        } elseif( $this->imageType == IMAGETYPE_GIF ) {
-            return 'image/gif';
-        } elseif( $this->imageType == IMAGETYPE_PNG ) {
-            return 'image/png';
+        if (!$this->imageType) {
+            throw new NothingLoadedException();
         }
-        return null;
+        return $this->contentType[$this->imageType];
     }
 
     /**
-     *  Free's up memory
+     *  Frees up memory
      */
     public function destroy()
     {
