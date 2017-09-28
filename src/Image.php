@@ -252,23 +252,25 @@ class Image
 
     private function handleTransparency($resource)
     {
-        if (($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType() == IMAGETYPE_PNG)) {
-
-            // Get transparency color's index number
-            $transparency = imagecolortransparent($this->image);
-
-            // Is a strange index other than -1 set?
-            if ($transparency >= 0) {
-
-                // deal with alpha channels
-                $this->prepWithExistingIndex($resource, $transparency);
-
-            } elseif ($this->getImageType() == IMAGETYPE_PNG) {
-
-                // deal with alpha channels
-                $this->prepTransparentPng($resource);
-            }
+        if ($this->getImageType() == IMAGETYPE_JPEG) {
+            return;
         }
+
+        // Get transparency color's index number
+        $transparency = imagecolortransparent($this->image);
+
+        // Is a strange index other than -1 set?
+        if ($transparency >= 0) {
+
+            // deal with alpha channels
+            $this->prepWithExistingIndex($resource, $transparency);
+
+        } elseif ($this->getImageType() == IMAGETYPE_PNG) {
+
+            // deal with alpha channels
+            $this->prepTransparentPng($resource);
+        }
+
     }
 
     /**
