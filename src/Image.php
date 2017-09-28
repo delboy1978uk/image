@@ -42,7 +42,7 @@ class Image
 
 
     /**
-     * @param $filename
+     * @param string $filename
      * @throws NotFoundException
      */
     public function load($filename)
@@ -66,7 +66,7 @@ class Image
      *  @param int $compression
      *  @param string $permissions
      */
-    public function save($filename = null, $compression=100, $permissions=null)
+    public function save($filename = null, $compression = 100, $permissions = null)
     {
         $filename = ($filename) ?: $this->fileName;
 
@@ -82,8 +82,8 @@ class Image
                 break;
         }
 
-        if( $permissions != null) {
-            chmod($filename, $permissions);
+        if( $permissions !== null) {
+            chmod($filename, (int) $permissions);
         }
     }
 
@@ -178,11 +178,11 @@ class Image
         } elseif ($targetRatio > $actualRatio) {
             // Resize to width, crop extra height
             $this->resizeToWidth($width);
-            $this->crop($width,$height,true);
+            $this->crop($width,$height);
         } else {
             // Resize to height, crop additional width
             $this->resizeToHeight($height);
-            $this->crop($width,$height,true);
+            $this->crop($width,$height);
         }
     }
 
@@ -264,7 +264,7 @@ class Image
      * @param int $height
      * @param string $trim
      */
-    function crop($width,$height, $trim = 'center')
+    public function crop($width,$height, $trim = 'center')
     {
         $offsetX = 0;
         $offsetY = 0;
@@ -278,7 +278,7 @@ class Image
             }
             if ($currentHeight > $height) {
                 $diff = $currentHeight - $height;
-                $offsetY = ($trim = 'center') ? $diff / 2 : $diff;
+                $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
             }
         }
 
