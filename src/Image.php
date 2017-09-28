@@ -87,32 +87,31 @@ class Image
     }
 
     /**
-     * @param $resource
      * @param $filename
      * @param $compression
      */
-    private function saveJpg($resource, $filename, $compression)
+    private function saveJpg($filename, $compression)
     {
         imagejpeg($this->image, $filename, $compression);
     }
 
     /**
-     * @param $resource
      * @param $filename
      * @param $compression
      */
-    private function saveGif($resource, $filename, $compression)
+    private function saveGif($filename, $compression)
     {
+        unset($compression);
         imagegif($this->image, $filename);
     }
 
     /**
-     * @param $resource
      * @param $filename
      * @param $compression
      */
-    private function savePng($resource, $filename, $compression)
+    private function savePng($filename, $compression)
     {
+        unset($compression);
         imagepng($this->image, $filename);
     }
 
