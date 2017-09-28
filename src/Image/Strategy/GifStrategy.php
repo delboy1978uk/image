@@ -2,7 +2,7 @@
 
 namespace Del\Image\Strategy;
 
-class GifStrategy implements ImageTypeStrategyInterface
+class GifStrategy extends AbstractTransparentImage implements ImageTypeStrategyInterface
 {
     /**
      * @param string $filename
@@ -32,4 +32,28 @@ class GifStrategy implements ImageTypeStrategyInterface
     {
         return 'image/gif';
     }
+
+    /**
+     * @param $resource
+     */
+    public function render($resource)
+    {
+        imagegif($resource);
+    }
+
+    public function handleTransparency($newImage, $image)
+    {
+        // Get transparency color's index number
+        $transparency = $this->getTransparencyIndex($image);
+
+        // Is a strange index other than -1 set?
+        if ($transparency >= 0) {
+
+            // deal with alpha channels
+            $this->prepWithExistingIndex($newImage, $image, $transparency);
+
+        }
+    }
+
+
 }

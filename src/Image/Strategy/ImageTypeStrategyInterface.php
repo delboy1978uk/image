@@ -22,4 +22,16 @@ interface ImageTypeStrategyInterface
      * @return string
      */
     public function getContentType();
+
+    /**
+     * @return void
+     */
+    public function render($resource);
+
+    /**
+     * @param resource $newImage
+     * @param resource $image
+     * @return void
+     */
+    public function handleTransparency($newImage, $image);
 }

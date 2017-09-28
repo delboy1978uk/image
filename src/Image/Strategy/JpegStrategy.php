@@ -25,4 +25,22 @@ class JpegStrategy implements ImageTypeStrategyInterface
     {
         return 'image/jpeg';
     }
+
+    /**
+     * @param $resource
+     */
+    public function render($resource)
+    {
+        imagejpeg($resource);
+    }
+
+    /**
+     * @return void
+     */
+    public function handleTransparency($newImage, $image)
+    {
+        return;
+    }
+
+
 }

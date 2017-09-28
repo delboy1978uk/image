@@ -14,9 +14,6 @@ class Image
     /** @var resource $image */
     private $image;
 
-    /** @var int $imageType */
-    private $imageType;
-
     /** @var string $fileName */
     private $fileName;
 
@@ -60,9 +57,7 @@ class Image
     public function load($filename)
     {
         $this->checkFileExists($filename);
-        $imageInfo = getimagesize($filename);
-        $this->imageType = $imageInfo[2];
-        $this->strategy = new $this->strategies[$this->imageType]();
+        $this->strategy = new $this->strategies[getimagesize($filename)[2]]();
         $this->image = $this->strategy->create($filename);
     }
 
@@ -111,19 +106,7 @@ class Image
 
     private function renderImage()
     {
-        switch ($this->imageType) {
-            case IMAGETYPE_JPEG:
-                imagejpeg($this->image);
-                break;
-            case IMAGETYPE_GIF:
-                imagegif($this->image);
-                break;
-            case IMAGETYPE_PNG:
-                imagealphablending($this->image, true);
-                imagesavealpha($this->image, true);
-                imagepng($this->image);
-                break;
-        }
+        $this->strategy->render($this->image);
     }
 
     /**
@@ -205,7 +188,7 @@ class Image
     {
         $newImage = imagecreatetruecolor($width, $height);
 
-        $this->handleTransparency($newImage);
+        $this->strategy->handleTransparency($newImage, $this->image);
 
         // Now resample the image
         imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
@@ -214,65 +197,7 @@ class Image
         $this->image = $newImage;
     }
 
-    private function handleTransparency($resource)
-    {
-        if ($this->getImageType() == IMAGETYPE_JPEG) {
-            return;
-        }
 
-        // Get transparency color's index number
-        $transparency = imagecolortransparent($this->image);
-
-        // Is a strange index other than -1 set?
-        if ($transparency >= 0) {
-
-            // deal with alpha channels
-            $this->prepWithExistingIndex($resource, $transparency);
-
-        } elseif ($this->getImageType() == IMAGETYPE_PNG) {
-
-            // deal with alpha channels
-            $this->prepTransparentPng($resource);
-        }
-
-    }
-
-    /**
-     * @param $resource
-     * @param $index
-     */
-    private function prepWithExistingIndex($resource, $index)
-    {
-        // Get the array of RGB vals for the transparency index
-        $transparentColor = imagecolorsforindex($this->image, $index);
-
-        // Now allocate the color
-        $transparency = imagecolorallocate($resource, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
-
-        // Fill the background with the color
-        imagefill($resource, 0, 0, $transparency);
-
-        // And set that color as the transparent one
-        imagecolortransparent($resource, $transparency);
-    }
-
-    /**
-     * @param $resource
-     */
-    private function prepTransparentPng($resource)
-    {
-        // Set blending mode as false
-        imagealphablending($resource, false);
-
-        // Tell it we want to save alpha channel info
-        imagesavealpha($resource, true);
-
-        // Set the transparent color
-        $color = imagecolorallocatealpha($resource, 0, 0, 0, 127);
-
-        // Fill the image with nothingness
-        imagefill($resource, 0, 0, $color);
-    }
 
 
     /**
@@ -327,14 +252,6 @@ class Image
             $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
         }
         return $offsetY;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getImageType()
-    {
-        return $this->imageType;
     }
 
     /**
