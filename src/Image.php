@@ -81,7 +81,8 @@ class Image
     public function save($filename = null, $compression = 100, $permissions = null)
     {
         $filename = ($filename) ?: $this->fileName;
-        $this->saveMethod[$this->imageType]($this->image, $filename, $compression);
+        $method = $this->saveMethod[$this->imageType];
+        $this->$method($this->image, $filename, $compression);
         $this->setPermissions($filename, $permissions);
     }
 
