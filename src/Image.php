@@ -39,6 +39,10 @@ class Image
         }
     }
 
+    /**
+     * @param $path
+     * @throws NotFoundException
+     */
     private function checkFileExists($path)
     {
         if (!file_exists($path)) {
@@ -90,7 +94,7 @@ class Image
      */
     private function setPermissions($filename, $permissions)
     {
-        if( $permissions !== null) {
+        if ($permissions !== null) {
             chmod($filename, (int) $permissions);
         }
     }
@@ -124,8 +128,8 @@ class Image
                 imagegif($this->image);
                 break;
             case IMAGETYPE_PNG:
-                imagealphablending($this->image,true);
-                imagesavealpha($this->image,true);
+                imagealphablending($this->image, true);
+                imagesavealpha($this->image, true);
                 imagepng($this->image);
                 break;
         }
@@ -154,7 +158,7 @@ class Image
     {
         $ratio = $height / $this->getHeight();
         $width = $this->getWidth() * $ratio;
-        $this->resize($width,$height);
+        $this->resize($width, $height);
     }
 
     /**
@@ -164,7 +168,7 @@ class Image
     {
         $ratio = $width / $this->getWidth();
         $height = $this->getHeight() * $ratio;
-        $this->resize($width,$height);
+        $this->resize($width, $height);
     }
 
     /**
@@ -174,29 +178,29 @@ class Image
     {
         $width = $this->getWidth() * $scale / 100;
         $height = $this->getHeight() * $scale / 100;
-        $this->resize($width,$height);
+        $this->resize($width, $height);
     }
 
     /**
      * @param int $width
      * @param int $height
      */
-    public function resizeAndCrop($width,$height)
+    public function resizeAndCrop($width, $height)
     {
         $targetRatio = $width / $height;
         $actualRatio = $this->getWidth() / $this->getHeight();
 
         if ($targetRatio == $actualRatio) {
             // Scale to size
-            $this->resize($width,$height);
+            $this->resize($width, $height);
         } elseif ($targetRatio > $actualRatio) {
             // Resize to width, crop extra height
             $this->resizeToWidth($width);
-            $this->crop($width,$height);
+            $this->crop($width, $height);
         } else {
             // Resize to height, crop additional width
             $this->resizeToHeight($height);
-            $this->crop($width,$height);
+            $this->crop($width, $height);
         }
     }
 
@@ -206,11 +210,11 @@ class Image
      *  @param int $width
      *  @param int $height
      */
-    public function resize($width,$height)
+    public function resize($width, $height)
     {
         $newImage = imagecreatetruecolor($width, $height);
 
-        if ( ($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG) ) {
+        if (($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG)) {
 
             // Get transparency color's index number
             $transparency = imagecolortransparent($this->image);
@@ -278,7 +282,7 @@ class Image
      * @param int $height
      * @param string $trim
      */
-    public function crop($width,$height, $trim = 'center')
+    public function crop($width, $height, $trim = 'center')
     {
         $offsetX = 0;
         $offsetY = 0;
@@ -296,7 +300,7 @@ class Image
             }
         }
 
-        $newImage = imagecreatetruecolor($width,$height);
+        $newImage = imagecreatetruecolor($width, $height);
         imagecopyresampled($newImage, $this->image, 0, 0, $offsetX, $offsetY, $width, $height, $width, $height);
         $this->image = $newImage;
     }
