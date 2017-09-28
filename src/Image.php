@@ -241,6 +241,17 @@ class Image
     {
         $newImage = imagecreatetruecolor($width, $height);
 
+        $this->handleTransparency($newImage);
+
+        // Now resample the image
+        imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+
+        // And allocate to $this
+        $this->image = $newImage;
+    }
+
+    private function handleTransparency($resource)
+    {
         if (($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType() == IMAGETYPE_PNG)) {
 
             // Get transparency color's index number
@@ -250,20 +261,14 @@ class Image
             if ($transparency >= 0) {
 
                 // deal with alpha channels
-                $this->prepWithExistingIndex($newImage, $transparency);
+                $this->prepWithExistingIndex($resource, $transparency);
 
             } elseif ($this->getImageType() == IMAGETYPE_PNG) {
 
                 // deal with alpha channels
-                $this->prepTransparentPng($newImage);
+                $this->prepTransparentPng($resource);
             }
         }
-
-        // Now resample the image
-        imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
-
-        // And allocate to $this
-        $this->image = $newImage;
     }
 
     /**
