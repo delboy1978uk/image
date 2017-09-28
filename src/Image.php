@@ -88,10 +88,12 @@ class Image
 
     /**
      * @param bool $return either output directly
-     * @return void|string image contents
+     * @return null|string image contents
      */
     public function output($return = false)
     {
+        $contents = null;
+
         if ($return) {
             ob_start();
         }
@@ -100,8 +102,9 @@ class Image
 
         if ($return) {
             $contents = ob_get_flush();
-            return $contents;
         }
+
+        return $contents;
     }
 
     private function renderImage()

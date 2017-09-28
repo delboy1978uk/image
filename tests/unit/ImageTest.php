@@ -231,6 +231,16 @@ class ImageTest extends Unit
         $this->assertEquals('bd8f12cb62d50d1052f27ca83b39ee79', $output);
     }
 
+    public function testResizeAndCropByWidth()
+    {
+        $path = 'tests/_data/transparentgif.gif';
+        $image = new Image();
+        $image->load($path);
+        $image->resizeAndCrop(100, 50);
+        $output = md5($image->output(true));
+        $this->assertEquals('', $output);
+    }
+
     public function testResizeAndCropTransparentPng()
     {
         $path = 'tests/_data/transparentpng.png';
