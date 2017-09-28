@@ -178,7 +178,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeToWidth(100);
         $output = md5($image->output(true));
-        $this->assertEquals('dcd679257efa0ee6e5773d740412ab2e', $output);
+        $this->assertEquals('e3f0ddc390f9efc6167403e96dfc50aa', $output);
     }
 
     public function testResizeToHeight()
@@ -218,7 +218,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeAndCrop(50, 50);
         $output = md5($image->output(true));
-        $this->assertEquals('c4c5cf18f9235c19f83699865223ad66', $output);
+        $this->assertEquals('67ac4c5c1316ee0202526c069094fe9f', $output);
     }
 
     public function testResizeAndCropByHeight()
@@ -228,7 +228,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeAndCrop(50, 100);
         $output = md5($image->output(true));
-        $this->assertEquals('bacd8b29e86935bc234d95ea634ea1a8', $output);
+        $this->assertEquals('bd8f12cb62d50d1052f27ca83b39ee79', $output);
     }
 
     public function testResizeAndCropTransparentPng()
