@@ -82,7 +82,7 @@ class Image
     {
         $filename = ($filename) ?: $this->fileName;
         $method = $this->saveMethod[$this->imageType];
-        $this->$method($this->image, $filename, $compression);
+        $this->$method($filename, $compression);
         $this->setPermissions($filename, $permissions);
     }
 
