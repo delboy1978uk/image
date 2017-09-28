@@ -23,6 +23,6 @@ class JpegStrategy implements ImageTypeStrategyInterface
      */
     public function getContentType()
     {
-        return 'image/jpg';
+        return 'image/jpeg';
     }
 }
