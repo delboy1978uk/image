@@ -238,7 +238,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeAndCrop(100, 50);
         $output = md5($image->output(true));
-        $this->assertEquals('', $output);
+        $this->assertEquals('68222f434214aa6b095cd156f50293b7', $output);
     }
 
     public function testResizeAndCropTransparentPng()
