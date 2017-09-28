@@ -111,7 +111,7 @@ class ImageTest extends Unit
         $savePath = 'tests/_data/sonsofanarchy2.jpg';
         $image = new Image();
         $image->load($path);
-        $image->save($savePath, 100, 777);
+        $image->save($savePath, 777);
         $this->assertTrue(file_exists($savePath));
         $image->load($savePath);
         $output = md5($image->output(true));
