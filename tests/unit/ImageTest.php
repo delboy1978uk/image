@@ -26,7 +26,7 @@ class ImageTest extends Unit
         $image = new Image();
         $image->load($path);
         $output = md5($image->output(true));
-        $this->assertEquals('8e50e24c21913061b002f1a61f21156a', $output);
+        $this->assertEquals('8823a6958464adb1440b1b83ad97aff5', $output);
     }
 
 
@@ -115,7 +115,7 @@ class ImageTest extends Unit
         $this->assertTrue(file_exists($savePath));
         $image->load($savePath);
         $output = md5($image->output(true));
-        $this->assertEquals('707b06a1c7fbce3aaccf5aa74deb2876', $output);
+        $this->assertEquals('9542c75b1d090f26bac2f7729f6e4629', $output);
         unlink($savePath);
     }
 
@@ -198,7 +198,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeAndCrop(50, 50);
         $output = md5($image->output(true));
-        $this->assertEquals('26d289088d6e98b028591afe6fc6b581', $output);
+        $this->assertEquals('c4c5cf18f9235c19f83699865223ad66', $output);
     }
 
     public function testResizeAndCropByHeight()
