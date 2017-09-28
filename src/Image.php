@@ -16,16 +16,25 @@ class Image
     /** @var string $fileName */
     private $fileName;
 
+    /** @var array  */
     private $contentType = [
         IMAGETYPE_JPEG => 'image/jpeg',
         IMAGETYPE_GIF => 'image/gif',
         IMAGETYPE_PNG =>'image/png',
     ];
 
+    /** @var array  */
     private $createCommand = [
         IMAGETYPE_JPEG => 'imagecreatefromjpeg',
         IMAGETYPE_GIF => 'imagecreatefromgif',
         IMAGETYPE_PNG =>'imagecreatefrompng',
+    ];
+
+    /** @var array  */
+    private $saveMethod = [
+        IMAGETYPE_JPEG => 'saveJpg',
+        IMAGETYPE_GIF => 'saveGif',
+        IMAGETYPE_PNG => 'savePng',
     ];
 
     /**
@@ -72,20 +81,38 @@ class Image
     public function save($filename = null, $compression = 100, $permissions = null)
     {
         $filename = ($filename) ?: $this->fileName;
-
-        switch ($this->imageType) {
-            case IMAGETYPE_JPEG:
-                imagejpeg($this->image, $filename, $compression);
-                break;
-            case IMAGETYPE_GIF:
-                imagegif($this->image, $filename);
-                break;
-            case IMAGETYPE_PNG:
-                imagepng($this->image, $filename);
-                break;
-        }
-
+        $this->saveMethod[$this->imageType]($this->image, $filename, $compression);
         $this->setPermissions($filename, $permissions);
+    }
+
+    /**
+     * @param $resource
+     * @param $filename
+     * @param $compression
+     */
+    private function saveJpg($resource, $filename, $compression)
+    {
+        imagejpeg($this->image, $filename, $compression);
+    }
+
+    /**
+     * @param $resource
+     * @param $filename
+     * @param $compression
+     */
+    private function saveGif($resource, $filename, $compression)
+    {
+        imagegif($this->image, $filename);
+    }
+
+    /**
+     * @param $resource
+     * @param $filename
+     * @param $compression
+     */
+    private function savePng($resource, $filename, $compression)
+    {
+        imagepng($this->image, $filename);
     }
 
     /**
@@ -214,7 +241,7 @@ class Image
     {
         $newImage = imagecreatetruecolor($width, $height);
 
-        if (($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType()  == IMAGETYPE_PNG)) {
+        if (($this->getImageType() == IMAGETYPE_GIF) || ($this->getImageType() == IMAGETYPE_PNG)) {
 
             // Get transparency color's index number
             $transparency = imagecolortransparent($this->image);
