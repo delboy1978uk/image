@@ -2,7 +2,7 @@
 
 namespace Del\Image\Strategy;
 
-class PngStrategy extends AbstractTransparentImage  implements ImageTypeStrategyInterface
+class PngStrategy implements ImageTypeStrategyInterface
 {
     /**
      * @param string $filename
@@ -45,19 +45,16 @@ class PngStrategy extends AbstractTransparentImage  implements ImageTypeStrategy
 
     public function handleTransparency($newImage, $image)
     {
-        // Get transparency color's index number
-        $transparency = $this->getTransparencyIndex($image);
+        // Set blending mode as false
+        imagealphablending($newImage, false);
 
-        // Is a strange index other than -1 set?
-        if ($transparency >= 0) {
+        // Tell it we want to save alpha channel info
+        imagesavealpha($newImage, true);
 
-            // deal with alpha channels
-            $this->prepWithExistingIndex($newImage, $image, $transparency);
+        // Set the transparent color
+        $color = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
 
-        } else {
-
-            // deal with alpha channels
-            $this->prepTransparentPng($newImage);
-        }
+        // Fill the image with nothingness
+        imagefill($newImage, 0, 0, $color);
     }
 }
