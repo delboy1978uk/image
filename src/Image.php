@@ -324,19 +324,45 @@ class Image
         $currentHeight = $this->getHeight();
 
         if ($trim != 'left') {
-            if ($currentWidth > $width) {
-                $diff = $currentWidth - $width;
-                $offsetX = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
-            }
-            if ($currentHeight > $height) {
-                $diff = $currentHeight - $height;
-                $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
-            }
+            $offsetX = $this->getOffsetX($currentWidth, $width, $trim);
+            $offsetY = $this->getOffsetY($currentHeight, $height, $trim);
         }
 
         $newImage = imagecreatetruecolor($width, $height);
         imagecopyresampled($newImage, $this->image, 0, 0, $offsetX, $offsetY, $width, $height, $width, $height);
         $this->image = $newImage;
+    }
+
+    /**
+     * @param $currentWidth
+     * @param $width
+     * @param $trim
+     * @return float|int
+     */
+    private function getOffsetX($currentWidth, $width, $trim)
+    {
+        $offsetX = 0;
+        if ($currentWidth > $width) {
+            $diff = $currentWidth - $width;
+            $offsetX = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
+        }
+        return $offsetX;
+    }
+
+    /**
+     * @param $currentHeight
+     * @param $height
+     * @param $trim
+     * @return float|int
+     */
+    private function getOffsetY($currentHeight, $height, $trim)
+    {
+        $offsetY = 0;
+        if ($currentHeight > $height) {
+            $diff = $currentHeight - $height;
+            $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
+        }
+        return $offsetY;
     }
 
     /**
