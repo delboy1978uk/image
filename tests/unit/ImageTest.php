@@ -15,7 +15,7 @@ class ImageTest extends Unit
         $path = 'tests/_data/sonsofanarchy.jpg';
         $image = new Image($path);
         $output = md5($image->output(true));
-        $this->assertEquals('8e50e24c21913061b002f1a61f21156a', $output);
+        $this->assertEquals('8823a6958464adb1440b1b83ad97aff5', $output);
         $image->destroy();
     }
 
@@ -208,7 +208,7 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeAndCrop(50, 100);
         $output = md5($image->output(true));
-        $this->assertEquals('d628b88fcc6642aa4859ae82e82591a1', $output);
+        $this->assertEquals('bacd8b29e86935bc234d95ea634ea1a8', $output);
     }
 
     public function testResizeAndCropTransparentPng()
