@@ -33,7 +33,7 @@ class Image
      */
     public function __construct($filename = null)
     {
-        if ($filename) {
+        if ($filename !== null) {
             $this->fileName = $filename;
             $this->load($filename);
         }
