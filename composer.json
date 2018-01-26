@@ -4,11 +4,11 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Derek McLean",
+            "name": "Derek Stephen McLean",
             "email": "delboy1978uk@gmail.com"
         }
     ],
-    "require": {
+    "require-dev": {
         "codeception/codeception": "^2.3"
     },
     "autoload":
@@ -17,6 +17,4 @@
             "Del\\": "src/"
         }
     },
-    "require-dev": {
-    }
 }
