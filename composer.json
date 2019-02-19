@@ -8,6 +8,9 @@
             "email": "delboy1978uk@gmail.com"
         }
     ],
+    "require": {
+        "ext-gd": "*"
+    },
     "require-dev": {
         "codeception/codeception": "^2.3"
     },

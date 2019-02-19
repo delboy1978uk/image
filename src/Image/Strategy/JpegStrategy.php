@@ -10,12 +10,12 @@ class JpegStrategy implements ImageTypeStrategyInterface
      */
     public function create($filename)
     {
-        return imagecreatefromjpeg($filename);
+        return \imagecreatefromjpeg($filename);
     }
 
     public function save($resource, $filename, $compression)
     {
-        imagejpeg($resource, $filename, $compression);
+        \imagejpeg($resource, $filename, $compression);
     }
 
     /**
@@ -31,7 +31,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
      */
     public function render($resource)
     {
-        imagejpeg($resource);
+        \imagejpeg($resource);
     }
 
     /**

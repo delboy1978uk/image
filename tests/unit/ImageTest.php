@@ -10,26 +10,33 @@ class ImageTest extends Unit
      */
     protected $tester;
 
+    /**
+     *
+     */
     public function testLoadJpgInConstructor()
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
         $image = new Image($path);
         $output = md5($image->output(true));
-        $this->assertEquals('8823a6958464adb1440b1b83ad97aff5', $output);
+        $this->assertEquals('8e50e24c21913061b002f1a61f21156a', $output);
         $image->destroy();
     }
 
-
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testLoadJpg()
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
         $image = new Image();
         $image->load($path);
         $output = md5($image->output(true));
-        $this->assertEquals('8823a6958464adb1440b1b83ad97aff5', $output);
+        $this->assertEquals('8e50e24c21913061b002f1a61f21156a', $output);
     }
 
-
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testLoadPng()
     {
         $path = 'tests/_data/troll.png';
@@ -40,6 +47,9 @@ class ImageTest extends Unit
     }
 
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testLoadGif()
     {
         $path = 'tests/_data/superman.gif';
@@ -49,6 +59,9 @@ class ImageTest extends Unit
         $this->assertEquals('ddc1d414f51592bcdc695fb53e6f304e', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testLoadThrowsException()
     {
         $this->expectException('Del\Image\Exception\NotFoundException');
@@ -57,6 +70,10 @@ class ImageTest extends Unit
         $image->load($path);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     * @throws Image\Exception\NothingLoadedException
+     */
     public function testGetHeaderForJpg()
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
@@ -66,6 +83,10 @@ class ImageTest extends Unit
         $this->assertEquals('image/jpeg', $contentType);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     * @throws Image\Exception\NothingLoadedException
+     */
     public function testGetHeaderForPng()
     {
         $path = 'tests/_data/troll.png';
@@ -75,6 +96,10 @@ class ImageTest extends Unit
         $this->assertEquals('image/png', $contentType);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     * @throws Image\Exception\NothingLoadedException
+     */
     public function testGetHeaderForGif()
     {
         $path = 'tests/_data/superman.gif';
@@ -84,6 +109,9 @@ class ImageTest extends Unit
         $this->assertEquals('image/gif', $contentType);
     }
 
+    /**
+     * @throws Image\Exception\NothingLoadedException
+     */
     public function testGetHeaderThrowsException()
     {
         $this->expectException('Del\Image\Exception\NothingLoadedException');
@@ -91,6 +119,9 @@ class ImageTest extends Unit
         $image->getHeader();
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testSaveGif()
     {
         $path = 'tests/_data/superman.gif';
@@ -101,10 +132,13 @@ class ImageTest extends Unit
         $this->assertTrue(file_exists($savePath));
         $image->load($savePath);
         $output = md5($image->output(true));
-        $this->assertEquals('ddc1d414f51592bcdc695fb53e6f304e', $output);
         unlink($savePath);
+        $this->assertEquals('ddc1d414f51592bcdc695fb53e6f304e', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testSaveJpg()
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
@@ -115,10 +149,13 @@ class ImageTest extends Unit
         $this->assertTrue(file_exists($savePath));
         $image->load($savePath);
         $output = md5($image->output(true));
-        $this->assertEquals('9542c75b1d090f26bac2f7729f6e4629', $output);
         unlink($savePath);
+        $this->assertEquals('707b06a1c7fbce3aaccf5aa74deb2876', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testSavePng()
     {
         $path = 'tests/_data/troll.png';
@@ -129,10 +166,13 @@ class ImageTest extends Unit
         $this->assertTrue(file_exists($savePath));
         $image->load($savePath);
         $output = md5($image->output(true));
-        $this->assertEquals('aa9783d7b949216b39d297836d772c47', $output);
         unlink($savePath);
+        $this->assertEquals('aa9783d7b949216b39d297836d772c47', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testGetWidth()
     {
         $path = 'tests/_data/troll.png';
@@ -142,6 +182,9 @@ class ImageTest extends Unit
         $this->assertEquals(233, $width);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testGetHeight()
     {
         $path = 'tests/_data/troll.png';
@@ -151,6 +194,9 @@ class ImageTest extends Unit
         $this->assertEquals(238, $height);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeToWidth()
     {
         $path = 'tests/_data/troll.png';
@@ -161,6 +207,9 @@ class ImageTest extends Unit
         $this->assertEquals('4c35a3f2a089531333568afa1b5daaac', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeJpg()
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
@@ -168,9 +217,12 @@ class ImageTest extends Unit
         $image->load($path);
         $image->resizeToWidth(100);
         $output = md5($image->output(true));
-        $this->assertEquals('9473454bc1dd0935c5c7d552652f4606', $output);
+        $this->assertEquals('63f55766fd71e174863cfecb060f9891', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeGif()
     {
         $path = 'tests/_data/transparentgif.gif';
@@ -181,6 +233,9 @@ class ImageTest extends Unit
         $this->assertEquals('e3f0ddc390f9efc6167403e96dfc50aa', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeToHeight()
     {
         $path = 'tests/_data/troll.png';
@@ -191,6 +246,9 @@ class ImageTest extends Unit
         $this->assertEquals('728bb56bb00dbd7ee64b24258124e267', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testScale()
     {
         $path = 'tests/_data/troll.png';
@@ -201,6 +259,9 @@ class ImageTest extends Unit
         $this->assertEquals('1ad91304c4aaffce7497f765d21c7645', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testCrop()
     {
         $path = 'tests/_data/troll.png';
@@ -211,6 +272,9 @@ class ImageTest extends Unit
         $this->assertEquals('8f6a566615be521def3e3558e25567cb', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeAndCrop()
     {
         $path = 'tests/_data/transparentgif.gif';
@@ -221,6 +285,9 @@ class ImageTest extends Unit
         $this->assertEquals('67ac4c5c1316ee0202526c069094fe9f', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeAndCropByHeight()
     {
         $path = 'tests/_data/transparentgif.gif';
@@ -231,6 +298,9 @@ class ImageTest extends Unit
         $this->assertEquals('bd8f12cb62d50d1052f27ca83b39ee79', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeAndCropByWidth()
     {
         $path = 'tests/_data/transparentgif.gif';
@@ -241,6 +311,9 @@ class ImageTest extends Unit
         $this->assertEquals('68222f434214aa6b095cd156f50293b7', $output);
     }
 
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
     public function testResizeAndCropTransparentPng()
     {
         $path = 'tests/_data/transparentpng.png';
