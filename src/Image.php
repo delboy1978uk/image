@@ -57,7 +57,8 @@ class Image
     public function load($filename)
     {
         $this->checkFileExists($filename);
-        $this->strategy = new $this->strategies[getimagesize($filename)[2]]();
+        $index = getimagesize($filename)[2];
+        $this->strategy = new $this->strategies[$index]();
         $this->image = $this->strategy->create($filename);
     }
 
@@ -81,7 +82,7 @@ class Image
     private function setPermissions($filename, $permissions)
     {
         if ($permissions !== null) {
-            chmod($filename, (int) $permissions);
+            chmod($filename, $permissions);
         }
     }
 
