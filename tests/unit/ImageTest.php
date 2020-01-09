@@ -2,6 +2,8 @@
 
 use Codeception\Test\Unit;
 use Del\Image;
+use Del\Image\Strategy\GifStrategy;
+use Del\Image\Strategy\JpegStrategy;
 
 class ImageTest extends Unit
 {
@@ -153,6 +155,24 @@ class ImageTest extends Unit
         unlink($savePath);
         $image->destroy();
         $this->assertTrue(strlen($output) > 0);
+    }
+
+
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
+    public function testSetStrategy()
+    {
+        $path = 'tests/_data/sonsofanarchy.jpg';
+        $image = new Image($path);
+        $reflection = new ReflectionClass(Image::class);
+        $property = $reflection->getProperty('strategy');
+        $property->setAccessible(true);
+        $strategy = $property->getValue($image);
+        $this->assertInstanceOf(JpegStrategy::class, $strategy);
+        $image->setImageStrategy(new GifStrategy());
+        $strategy = $property->getValue($image);
+        $this->assertInstanceOf(GifStrategy::class, $strategy);
     }
 
     /**

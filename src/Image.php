@@ -61,6 +61,14 @@ class Image
         $this->image = $this->strategy->create($filename);
     }
 
+    /**
+     * @param ImageTypeStrategyInterface $imageTypeStrategy
+     */
+    public function setImageStrategy(ImageTypeStrategyInterface $imageTypeStrategy): void
+    {
+        $this->strategy = $imageTypeStrategy;
+    }
+
 
     /**
      *  @param string $filename
