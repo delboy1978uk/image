@@ -8,30 +8,30 @@ interface ImageTypeStrategyInterface
      * @param string $filename
      * @return resource
      */
-    public function create($filename);
+    public function create(string $filename): resource;
 
     /**
      * @param resource $resource
      * @param string $filename
      * @param int $compression
-     * @return mixed
+     * @return void
      */
-    public function save($resource, $filename, $compression);
+    public function save(resource $resource, string $filename, int $compression): void;
 
     /**
      * @return string
      */
-    public function getContentType();
+    public function getContentType(): string;
 
     /**
      * @return void
      */
-    public function render($resource);
+    public function render($resource): void;
 
     /**
      * @param resource $newImage
      * @param resource $image
      * @return void
      */
-    public function handleTransparency($newImage, $image);
+    public function handleTransparency(resource $newImage, resource $image): void;
 }

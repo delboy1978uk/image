@@ -30,7 +30,7 @@ class Image
     /**
      * @param string $filename
      */
-    public function __construct($filename = null)
+    public function __construct(string $filename = null)
     {
         if ($filename !== null) {
             $this->fileName = $filename;
@@ -42,7 +42,7 @@ class Image
      * @param $path
      * @throws NotFoundException
      */
-    private function checkFileExists($path)
+    private function checkFileExists(string $path): void
     {
         if (!file_exists($path)) {
             throw new NotFoundException("$path does not exist");
@@ -54,7 +54,7 @@ class Image
      * @param string $filename
      * @throws NotFoundException
      */
-    public function load($filename)
+    public function load(string $filename): void
     {
         $this->checkFileExists($filename);
         $index = getimagesize($filename)[2];
@@ -76,7 +76,7 @@ class Image
      *  @param int $compression
      *  @param string $permissions
      */
-    public function save($filename = null, $permissions = null, $compression = 100)
+    public function save(string $filename = null, int $permissions = null, int $compression = 100): void 
     {
         $filename = ($filename) ?: $this->fileName;
         $this->strategy->save($this->image, $filename, $compression);
@@ -87,7 +87,7 @@ class Image
      * @param $filename
      * @param $permissions
      */
-    private function setPermissions($filename, $permissions)
+    private function setPermissions(string $filename, int $permissions): void
     {
         if ($permissions !== null) {
             chmod($filename, $permissions);
@@ -99,7 +99,7 @@ class Image
      * @param bool $return either output directly
      * @return null|string image contents
      */
-    public function output($return = false)
+    public function output(bool $return = false): ?string
     {
         $contents = null;
 
@@ -116,7 +116,7 @@ class Image
         return $contents;
     }
 
-    private function renderImage()
+    private function renderImage(): void
     {
         $this->strategy->render($this->image);
     }
@@ -124,7 +124,7 @@ class Image
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return imagesx($this->image);
     }
@@ -132,7 +132,7 @@ class Image
     /**
      * @return int
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return imagesy($this->image);
     }
@@ -140,7 +140,7 @@ class Image
     /**
      * @param int $height
      */
-    public function resizeToHeight($height)
+    public function resizeToHeight(int $height): void
     {
         $ratio = $height / $this->getHeight();
         $width = $this->getWidth() * $ratio;
@@ -150,7 +150,7 @@ class Image
     /**
      * @param int $width
      */
-    public function resizeToWidth($width)
+    public function resizeToWidth(int $width): void
     {
         $ratio = $width / $this->getWidth();
         $height = $this->getHeight() * $ratio;
@@ -160,7 +160,7 @@ class Image
     /**
      * @param int $scale %
      */
-    public function scale($scale)
+    public function scale(int $scale): void
     {
         $width = $this->getWidth() * $scale / 100;
         $height = $this->getHeight() * $scale / 100;
@@ -171,7 +171,7 @@ class Image
      * @param int $width
      * @param int $height
      */
-    public function resizeAndCrop($width, $height)
+    public function resizeAndCrop(int $width, int $height): void 
     {
         $targetRatio = $width / $height;
         $actualRatio = $this->getWidth() / $this->getHeight();
@@ -196,7 +196,7 @@ class Image
      *  @param int $width
      *  @param int $height
      */
-    public function resize($width, $height)
+    public function resize(int $width, int $height): void 
     {
         $newImage = imagecreatetruecolor($width, $height);
 
@@ -215,9 +215,9 @@ class Image
     /**
      * @param int $width
      * @param int $height
-     * @param string $trim
+     * @param string $trim from either left or center
      */
-    public function crop($width, $height, $trim = 'center')
+    public function crop(int $width, int $height, string $trim = 'center'): void
     {
         $offsetX = 0;
         $offsetY = 0;
@@ -235,53 +235,56 @@ class Image
     }
 
     /**
-     * @param $currentWidth
-     * @param $width
-     * @param $trim
-     * @return float|int
+     * @param int $currentWidth
+     * @param int $width
+     * @param string $trim
+     * @return int
      */
-    private function getOffsetX($currentWidth, $width, $trim)
+    private function getOffsetX(int $currentWidth, int $width, string $trim): int
     {
         $offsetX = 0;
         if ($currentWidth > $width) {
             $diff = $currentWidth - $width;
             $offsetX = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
         }
-        return $offsetX;
+        
+        return (int) $offsetX;
     }
 
     /**
-     * @param $currentHeight
-     * @param $height
-     * @param $trim
-     * @return float|int
+     * @param int $currentHeight
+     * @param int $height
+     * @param string $trim
+     * @return int
      */
-    private function getOffsetY($currentHeight, $height, $trim)
+    private function getOffsetY(int $currentHeight, int $height, string $trim): int 
     {
         $offsetY = 0;
         if ($currentHeight > $height) {
             $diff = $currentHeight - $height;
             $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
         }
-        return $offsetY;
+        
+        return (int) $offsetY;
     }
 
     /**
-     * @return mixed
+     * @return string
      * @throws NothingLoadedException
      */
-    public function getHeader()
+    public function getHeader(): string
     {
         if (!$this->strategy) {
             throw new NothingLoadedException();
         }
+        
         return $this->strategy->getContentType();
     }
 
     /**
      *  Frees up memory
      */
-    public function destroy()
+    public function destroy(): void
     {
         imagedestroy($this->image);
     }

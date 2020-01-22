@@ -8,9 +8,9 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param string $filename
      * @return resource
      */
-    public function create($filename)
+    public function create(string $filename): resource
     {
-        return imagecreatefromgif($filename);
+        return \imagecreatefromgif($filename);
     }
 
     /**
@@ -19,29 +19,29 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save($resource, $filename, $compression)
+    public function save(resource $resource, string $filename, int $compression = 100): void
     {
         unset($compression);
-        imagegif($resource, $filename);
+        \imagegif($resource, $filename);
     }
 
     /**
      * @return string
      */
-    public function getContentType()
+    public function getContentType(): string
     {
         return 'image/gif';
     }
 
     /**
-     * @param $resource
+     * @param resource $resource
      */
-    public function render($resource)
+    public function render(resource $resource): void
     {
-        imagegif($resource);
+        \imagegif($resource);
     }
 
-    public function handleTransparency($newImage, $image)
+    public function handleTransparency(resource $newImage, resource $image)
     {
         // Get transparency color's index number
         $transparency = $this->getTransparencyIndex($image);
@@ -57,27 +57,27 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param resource $image
      * @param int $index
      */
-    private function prepWithCustomTransparencyIndex($newImage, $image, $index)
+    private function prepWithCustomTransparencyIndex(resource $newImage, resource $image, int $index): void
     {
         // Get the array of RGB vals for the transparency index
-        $transparentColor = imagecolorsforindex($image, $index);
+        $transparentColor = \imagecolorsforindex($image, $index);
 
         // Now allocate the color
-        $transparency = imagecolorallocate($newImage, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
+        $transparency = \imagecolorallocate($newImage, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
 
         // Fill the background with the color
-        imagefill($newImage, 0, 0, $transparency);
+        \imagefill($newImage, 0, 0, $transparency);
 
         // And set that color as the transparent one
-        imagecolortransparent($newImage, $transparency);
+        \imagecolortransparent($newImage, $transparency);
     }
 
     /**
      * @param resource $image
      * @return int
      */
-    private function getTransparencyIndex($image)
+    private function getTransparencyIndex(resource $image): int
     {
-        return imagecolortransparent($image);
+        return \imagecolortransparent($image);
     }
 }
