@@ -41,7 +41,7 @@ class GifStrategy implements ImageTypeStrategyInterface
         \imagegif($resource);
     }
 
-    public function handleTransparency($newImage, $image)
+    public function handleTransparency($newImage, $image): void
     {
         // Get transparency color's index number
         $transparency = $this->getTransparencyIndex($image);

@@ -34,7 +34,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
     /**
      * @param resource $resource
      */
-    public function render($resource)
+    public function render($resource): void
     {
         \imagejpeg($resource);
     }
