@@ -8,7 +8,7 @@ class PngStrategy implements ImageTypeStrategyInterface
      * @param string $filename
      * @return resource
      */
-    public function create(string $filename): resource
+    public function create(string $filename)
     {
         return \imagecreatefrompng($filename);
     }
@@ -19,7 +19,7 @@ class PngStrategy implements ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save(resource $resource, string $filename, int $compression = 100): void
+    public function save($resource, string $filename, int $compression = 100): void
     {
         unset($compression);
         \imagepng($resource, $filename);
@@ -36,7 +36,7 @@ class PngStrategy implements ImageTypeStrategyInterface
     /**
      * @param $resource
      */
-    public function render(resource $resource): void
+    public function render($resource): void
     {
         imagealphablending($resource, true);
         imagesavealpha($resource, true);
@@ -47,7 +47,7 @@ class PngStrategy implements ImageTypeStrategyInterface
      * @param resource $newImage
      * @param resource $image
      */
-    public function handleTransparency(resource $newImage, resource $image): void
+    public function handleTransparency($newImage, $image): void
     {
         // Set blending mode as false
         imagealphablending($newImage, false);

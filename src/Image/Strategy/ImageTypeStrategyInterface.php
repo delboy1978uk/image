@@ -8,7 +8,7 @@ interface ImageTypeStrategyInterface
      * @param string $filename
      * @return resource
      */
-    public function create(string $filename): resource;
+    public function create(string $filename);
 
     /**
      * @param resource $resource
@@ -16,7 +16,7 @@ interface ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save(resource $resource, string $filename, int $compression): void;
+    public function save($resource, string $filename, int $compression): void;
 
     /**
      * @return string
@@ -33,5 +33,5 @@ interface ImageTypeStrategyInterface
      * @param resource $image
      * @return void
      */
-    public function handleTransparency(resource $newImage, resource $image): void;
+    public function handleTransparency($newImage, $image): void;
 }

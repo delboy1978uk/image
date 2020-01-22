@@ -8,7 +8,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
      * @param string $filename
      * @return null|resource
      */
-    public function create(string $filename): ?resource
+    public function create(string $filename)
     {
         return \imagecreatefromjpeg($filename);
     }
@@ -29,7 +29,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
     /**
      * @param resource $resource
      */
-    public function render(resource $resource)
+    public function render($resource)
     {
         \imagejpeg($resource);
     }
@@ -38,7 +38,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
      * @param resource $newImage
      * @param resource $image
      */
-    public function handleTransparency(resource $newImage, resource $image): void
+    public function handleTransparency($newImage, $image): void
     {
         // Jpeg's aren't transparent.
         return;

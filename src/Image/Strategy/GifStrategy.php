@@ -8,7 +8,7 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param string $filename
      * @return resource
      */
-    public function create(string $filename): resource
+    public function create(string $filename)
     {
         return \imagecreatefromgif($filename);
     }
