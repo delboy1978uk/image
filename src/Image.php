@@ -84,10 +84,10 @@ class Image
     }
 
     /**
-     * @param $filename
-     * @param $permissions
+     * @param string $filename
+     * @param int|null $permissions
      */
-    private function setPermissions(string $filename, int $permissions): void
+    private function setPermissions(string $filename, ?int $permissions = null): void
     {
         if ($permissions !== null) {
             chmod($filename, $permissions);
