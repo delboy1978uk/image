@@ -13,7 +13,12 @@ class JpegStrategy implements ImageTypeStrategyInterface
         return \imagecreatefromjpeg($filename);
     }
 
-    public function save(resource $resource, string $filename, int $compression): void
+    /**
+     * @param resource $resource
+     * @param string $filename
+     * @param int $compression
+     */
+    public function save($resource, string $filename, int $compression): void
     {
         \imagejpeg($resource, $filename, $compression);
     }

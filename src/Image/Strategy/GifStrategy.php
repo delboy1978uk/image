@@ -19,7 +19,7 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save(resource $resource, string $filename, int $compression = 100): void
+    public function save($resource, string $filename, int $compression = 100): void
     {
         unset($compression);
         \imagegif($resource, $filename);
@@ -36,12 +36,12 @@ class GifStrategy implements ImageTypeStrategyInterface
     /**
      * @param resource $resource
      */
-    public function render(resource $resource): void
+    public function render($resource): void
     {
         \imagegif($resource);
     }
 
-    public function handleTransparency(resource $newImage, resource $image)
+    public function handleTransparency($newImage, $image)
     {
         // Get transparency color's index number
         $transparency = $this->getTransparencyIndex($image);
@@ -57,7 +57,7 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param resource $image
      * @param int $index
      */
-    private function prepWithCustomTransparencyIndex(resource $newImage, resource $image, int $index): void
+    private function prepWithCustomTransparencyIndex($newImage, $image, int $index): void
     {
         // Get the array of RGB vals for the transparency index
         $transparentColor = \imagecolorsforindex($image, $index);
@@ -76,7 +76,7 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param resource $image
      * @return int
      */
-    private function getTransparencyIndex(resource $image): int
+    private function getTransparencyIndex($image): int
     {
         return \imagecolortransparent($image);
     }
