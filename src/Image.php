@@ -110,7 +110,7 @@ class Image
         $this->renderImage();
 
         if ($return) {
-            $contents = ob_get_flush();
+            $contents = ob_get_clean();
         }
 
         return $contents;
