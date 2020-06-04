@@ -2,7 +2,7 @@
 
 namespace Del\Image\Strategy;
 
-class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterface
+class WebPStrategy extends TransparentStrategy implements ImageTypeStrategyInterface
 {
     /**
      * @param string $filename
@@ -10,7 +10,7 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      */
     public function create(string $filename)
     {
-        return \imagecreatefrompng($filename);
+        return \imagecreatefromwebp($filename);
     }
 
     /**
@@ -21,8 +21,7 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      */
     public function save($resource, string $filename, int $compression = 100): void
     {
-        unset($compression);
-        \imagepng($resource, $filename);
+        \imagewebp($resource, $filename);
     }
 
     /**
@@ -30,7 +29,7 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      */
     public function getContentType(): string
     {
-        return 'image/png';
+        return 'image/webp';
     }
 
     /**
@@ -40,6 +39,6 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
     {
         imagealphablending($resource, true);
         imagesavealpha($resource, true);
-        imagepng($resource);
+        imagewebp($resource);
     }
 }

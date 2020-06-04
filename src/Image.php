@@ -8,6 +8,7 @@ use Del\Image\Strategy\GifStrategy;
 use Del\Image\Strategy\ImageTypeStrategyInterface;
 use Del\Image\Strategy\JpegStrategy;
 use Del\Image\Strategy\PngStrategy;
+use Del\Image\Strategy\WebPStrategy;
 
 class Image 
 {
@@ -25,6 +26,7 @@ class Image
         IMAGETYPE_JPEG => JpegStrategy::class,
         IMAGETYPE_GIF => GifStrategy::class,
         IMAGETYPE_PNG => PngStrategy::class,
+        IMAGETYPE_WEBP => WebPStrategy::class,
     ];
 
     /**

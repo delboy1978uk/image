@@ -25,6 +25,19 @@ class ImageTest extends Unit
     }
 
     /**
+     * @throws Image\Exception\NothingLoadedException
+     */
+    public function testLoadWebpInConstructor()
+    {
+        $path = 'tests/_data/landscape.webp';
+        $image = new Image($path);
+        $output = $image->output(true);
+        $image->destroy();
+        $this->assertTrue(strlen($output) > 0);
+        $this->assertEquals('image/webp', $image->getHeader());
+    }
+
+    /**
      * @throws Image\Exception\NotFoundException
      */
     public function testLoadJpg()
@@ -149,6 +162,24 @@ class ImageTest extends Unit
     {
         $path = 'tests/_data/sonsofanarchy.jpg';
         $savePath = 'tests/_data/sonsofanarchy2.jpg';
+        $image = new Image();
+        $image->load($path);
+        $image->save($savePath, 777);
+        $this->assertTrue(file_exists($savePath));
+        $image->load($savePath);
+        $output = $image->output(true);
+        unlink($savePath);
+        $image->destroy();
+        $this->assertTrue(strlen($output) > 0);
+    }
+
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
+    public function testSaveWebp()
+    {
+        $path = 'tests/_data/landscape.webp';
+        $savePath = 'tests/_data/landscape2.webp';
         $image = new Image();
         $image->load($path);
         $image->save($savePath, 777);
