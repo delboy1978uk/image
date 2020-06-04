@@ -1,0 +1,22 @@
+version: '2'
+
+volumes:
+    db_data:
+        driver: local
+
+services:
+    php:
+        build: ./build/php
+        ports:
+            - 9000
+            - 9001
+        volumes_from:
+            - app
+        environment:
+            APPLICATION_ENV: 'development'
+
+    app:
+        image: httpd:2.4.38
+        volumes:
+            - ./:/var/www/html
+        command: "echo true"
