@@ -32,6 +32,7 @@ $image->getHeight(); // returns height in pixels
 $image->getWidth(); // returns width in pixels
 $image->output(); // output to browser
 $image->output(true); // passing true returns raw image data string
+$image->outputBase64Src(); // for use here <img src="HERE" />
 $image->resize($width, $height); // resize to the given dimensions
 $image->resizeAndCrop($width, $height); // resize to the given dimensions, cropping top/bottom or sides
 $image->save(); // Save the image
