@@ -118,6 +118,15 @@ class Image
         return $contents;
     }
 
+    /**
+     * @return string
+     * @throws NothingLoadedException
+     */
+    public function outputBase64Src(): string
+    {
+        return 'data:' . $this->getHeader() . ';base64,' . \base64_encode( $this->output(true) );
+    }
+
     private function renderImage(): void
     {
         $this->strategy->render($this->image);
