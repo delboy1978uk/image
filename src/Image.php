@@ -78,7 +78,7 @@ class Image
      *  @param int $compression
      *  @param string $permissions
      */
-    public function save(string $filename = null, int $permissions = null, int $compression = 100): void 
+    public function save(string $filename = null, int $permissions = null, int $compression = 100): void
     {
         $filename = ($filename) ?: $this->fileName;
         $this->strategy->save($this->image, $filename, $compression);

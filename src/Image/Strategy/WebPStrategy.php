@@ -19,9 +19,9 @@ class WebPStrategy extends TransparentStrategy implements ImageTypeStrategyInter
      * @param int $compression
      * @return void
      */
-    public function save($resource, string $filename, int $compression = 100): void
+    public function save($resource, string $filename = null, int $compression = 100): void
     {
-        \imagewebp($resource, $filename);
+        \imagewebp($resource, $filename, $compression);
     }
 
     /**
@@ -40,5 +40,13 @@ class WebPStrategy extends TransparentStrategy implements ImageTypeStrategyInter
         imagealphablending($resource, true);
         imagesavealpha($resource, true);
         imagewebp($resource);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension(): string
+    {
+        return 'webp';
     }
 }

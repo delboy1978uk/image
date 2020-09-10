@@ -19,7 +19,7 @@ class GifStrategy implements ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save($resource, string $filename, int $compression = 100): void
+    public function save($resource, string $filename = null, int $compression = 100): void
     {
         unset($compression);
         \imagegif($resource, $filename);
@@ -79,5 +79,13 @@ class GifStrategy implements ImageTypeStrategyInterface
     private function getTransparencyIndex($image): int
     {
         return \imagecolortransparent($image);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension(): string
+    {
+        return 'gif';
     }
 }

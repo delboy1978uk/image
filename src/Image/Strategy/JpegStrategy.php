@@ -18,7 +18,7 @@ class JpegStrategy implements ImageTypeStrategyInterface
      * @param string $filename
      * @param int $compression
      */
-    public function save($resource, string $filename, int $compression): void
+    public function save($resource, string $filename = null, int $compression = 100): void
     {
         \imagejpeg($resource, $filename, $compression);
     }
@@ -47,5 +47,13 @@ class JpegStrategy implements ImageTypeStrategyInterface
     {
         // Jpeg's aren't transparent.
         return;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension(): string
+    {
+        return 'jpg';
     }
 }

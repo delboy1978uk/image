@@ -19,7 +19,7 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      * @param int $compression
      * @return void
      */
-    public function save($resource, string $filename, int $compression = 100): void
+    public function save($resource, string $filename = null, int $compression = 100): void
     {
         unset($compression);
         \imagepng($resource, $filename);
@@ -41,5 +41,13 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
         imagealphablending($resource, true);
         imagesavealpha($resource, true);
         imagepng($resource);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension(): string
+    {
+        return 'png';
     }
 }

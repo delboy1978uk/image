@@ -16,12 +16,17 @@ interface ImageTypeStrategyInterface
      * @param int $compression
      * @return void
      */
-    public function save($resource, string $filename, int $compression): void;
+    public function save($resource, string $filename = null, int $compression = 100): void;
 
     /**
      * @return string
      */
     public function getContentType(): string;
+
+    /**
+     * @return string
+     */
+    public function getFileExtension(): string;
 
     /**
      * @return void
