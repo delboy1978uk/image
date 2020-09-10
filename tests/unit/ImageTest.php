@@ -417,4 +417,19 @@ class ImageTest extends Unit
         $this->assertTrue(file_exists('tests/_data/transparentpng.webp'));
         unlink('tests/_data/transparentpng.webp');
     }
+
+    /**
+     * @throws Image\Exception\NotFoundException
+     */
+    public function testExtensions()
+    {
+        $strategy = new WebPStrategy();
+        $this->assertEquals('webp', $strategy->getFileExtension());
+        $strategy = new GifStrategy();
+        $this->assertEquals('gif', $strategy->getFileExtension());
+        $strategy = new JpegStrategy();
+        $this->assertEquals('jpg', $strategy->getFileExtension());
+        $strategy = new Image\Strategy\PngStrategy();
+        $this->assertEquals('png', $strategy->getFileExtension());
+    }
 }
