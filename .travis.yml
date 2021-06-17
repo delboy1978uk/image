@@ -25,14 +25,12 @@ script:
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover tests/_output/coverage.xml
+  - wget https://raw.githubusercontent.com/delboy1978uk/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
 
 after_success:
-  - wget https://raw.githubusercontent.com/delboy1978uk/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
   - ./send.sh success $WEBHOOK_URL
 after_failure:
-  - wget https://raw.githubusercontent.com/delboy1978uk/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
 
 notifications:
