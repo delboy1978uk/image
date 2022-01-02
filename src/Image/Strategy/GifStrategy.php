@@ -21,7 +21,6 @@ class GifStrategy implements ImageTypeStrategyInterface
      */
     public function save($resource, string $filename, int $compression = 100): void
     {
-        unset($compression);
         \imagegif($resource, $filename);
     }
 

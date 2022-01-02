@@ -46,6 +46,5 @@ class JpegStrategy implements ImageTypeStrategyInterface
     public function handleTransparency($newImage, $image): void
     {
         // Jpeg's aren't transparent.
-        return;
     }
 }

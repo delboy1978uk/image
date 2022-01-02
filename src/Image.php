@@ -10,7 +10,7 @@ use Del\Image\Strategy\JpegStrategy;
 use Del\Image\Strategy\PngStrategy;
 use Del\Image\Strategy\WebPStrategy;
 
-class Image 
+class Image
 {
     /** @var resource $image */
     private $image;
@@ -46,7 +46,7 @@ class Image
      */
     private function checkFileExists(string $path): void
     {
-        if (!file_exists($path)) {
+        if (!\file_exists($path)) {
             throw new NotFoundException("$path does not exist");
         }
     }
@@ -59,7 +59,7 @@ class Image
     public function load(string $filename): void
     {
         $this->checkFileExists($filename);
-        $index = getimagesize($filename)[2];
+        $index = \getimagesize($filename)[2];
         $this->strategy = new $this->strategies[$index]();
         $this->image = $this->strategy->create($filename);
     }
@@ -78,7 +78,7 @@ class Image
      *  @param int $compression
      *  @param string $permissions
      */
-    public function save(string $filename = null, int $permissions = null, int $compression = 100): void 
+    public function save(string $filename = null, int $permissions = null, int $compression = 100): void
     {
         $filename = ($filename) ?: $this->fileName;
         $this->strategy->save($this->image, $filename, $compression);
@@ -92,7 +92,7 @@ class Image
     private function setPermissions(string $filename, ?int $permissions = null): void
     {
         if ($permissions !== null) {
-            chmod($filename, $permissions);
+            \chmod($filename, $permissions);
         }
     }
 
@@ -106,13 +106,13 @@ class Image
         $contents = null;
 
         if ($return) {
-            ob_start();
+            \ob_start();
         }
 
         $this->renderImage();
 
         if ($return) {
-            $contents = ob_get_clean();
+            $contents = \ob_get_clean();
         }
 
         return $contents;
@@ -137,7 +137,7 @@ class Image
      */
     public function getWidth(): int
     {
-        return imagesx($this->image);
+        return \imagesx($this->image);
     }
 
     /**
@@ -145,7 +145,7 @@ class Image
      */
     public function getHeight(): int
     {
-        return imagesy($this->image);
+        return \imagesy($this->image);
     }
 
     /**
@@ -182,7 +182,7 @@ class Image
      * @param int $width
      * @param int $height
      */
-    public function resizeAndCrop(int $width, int $height): void 
+    public function resizeAndCrop(int $width, int $height): void
     {
         $targetRatio = $width / $height;
         $actualRatio = $this->getWidth() / $this->getHeight();
@@ -207,14 +207,14 @@ class Image
      *  @param int $width
      *  @param int $height
      */
-    public function resize(int $width, int $height): void 
+    public function resize(int $width, int $height): void
     {
-        $newImage = imagecreatetruecolor($width, $height);
+        $newImage = \imagecreatetruecolor($width, $height);
 
         $this->strategy->handleTransparency($newImage, $this->image);
 
         // Now resample the image
-        imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+        \imagecopyresampled($newImage, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
 
         // And allocate to $this
         $this->image = $newImage;
@@ -235,13 +235,13 @@ class Image
         $currentWidth = $this->getWidth();
         $currentHeight = $this->getHeight();
 
-        if ($trim != 'left') {
+        if ($trim !== 'left') {
             $offsetX = $this->getOffsetX($currentWidth, $width, $trim);
             $offsetY = $this->getOffsetY($currentHeight, $height, $trim);
         }
 
-        $newImage = imagecreatetruecolor($width, $height);
-        imagecopyresampled($newImage, $this->image, 0, 0, $offsetX, $offsetY, $width, $height, $width, $height);
+        $newImage = \imagecreatetruecolor($width, $height);
+        \imagecopyresampled($newImage, $this->image, 0, 0, $offsetX, $offsetY, $width, $height, $width, $height);
         $this->image = $newImage;
     }
 
@@ -254,11 +254,12 @@ class Image
     private function getOffsetX(int $currentWidth, int $width, string $trim): int
     {
         $offsetX = 0;
+
         if ($currentWidth > $width) {
             $diff = $currentWidth - $width;
-            $offsetX = ($trim == 'center') ? $diff / 2 : $diff; //full diff for trim right
+            $offsetX = ($trim === 'center') ? $diff / 2 : $diff; //full diff for trim right
         }
-        
+
         return (int) $offsetX;
     }
 
@@ -268,14 +269,15 @@ class Image
      * @param string $trim
      * @return int
      */
-    private function getOffsetY(int $currentHeight, int $height, string $trim): int 
+    private function getOffsetY(int $currentHeight, int $height, string $trim): int
     {
         $offsetY = 0;
+
         if ($currentHeight > $height) {
             $diff = $currentHeight - $height;
-            $offsetY = ($trim == 'center') ? $diff / 2 : $diff;
+            $offsetY = ($trim === 'center') ? $diff / 2 : $diff;
         }
-        
+
         return (int) $offsetY;
     }
 
@@ -288,7 +290,7 @@ class Image
         if (!$this->strategy) {
             throw new NothingLoadedException();
         }
-        
+
         return $this->strategy->getContentType();
     }
 
@@ -297,6 +299,6 @@ class Image
      */
     public function destroy(): void
     {
-        imagedestroy($this->image);
+        \imagedestroy($this->image);
     }
 }

@@ -21,7 +21,6 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      */
     public function save($resource, string $filename, int $compression = 100): void
     {
-        unset($compression);
         \imagepng($resource, $filename);
     }
 
@@ -38,8 +37,8 @@ class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterf
      */
     public function render($resource): void
     {
-        imagealphablending($resource, true);
-        imagesavealpha($resource, true);
-        imagepng($resource);
+        \imagealphablending($resource, true);
+        \imagesavealpha($resource, true);
+        \imagepng($resource);
     }
 }
