@@ -1,3 +1,4 @@
+
 # image
 [![Latest Stable Version](https://poser.pugx.org/delboy1978uk/image/v/stable)](https://packagist.org/packages/delboy1978uk/image) [![Total Downloads](https://poser.pugx.org/delboy1978uk/image/downloads)](https://packagist.org/packages/delboy1978uk/image) [![Latest Unstable Version](https://poser.pugx.org/delboy1978uk/image/v/unstable)](https://packagist.org/packages/delboy1978uk/image) [![License](https://poser.pugx.org/delboy1978uk/image/license)](https://packagist.org/packages/delboy1978uk/image)<br />
 [![Build Status](https://travis-ci.org/delboy1978uk/image.png?branch=master)](https://travis-ci.org/delboy1978uk/image) [![Code Coverage](https://scrutinizer-ci.com/g/delboy1978uk/image/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/delboy1978uk/image/?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/delboy1978uk/image/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/delboy1978uk/image/?branch=master)<br />
@@ -6,7 +7,7 @@ A PHP image class utilising the `gd` library
 ```composer require delboy1978uk/image```
 ## Usage
 ### Instantiation
-You can pass a path name into the constructor, or you can use the `load()` method. Accepts `png`, `jpg`, or `gif` images.
+You can pass a path name into the constructor, or you can use the `load()` method. Accepts `png`, `jpg`, `gif`, and `webp` images.
 ```php
 <?php
 
