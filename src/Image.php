@@ -154,7 +154,7 @@ class Image
     public function resizeToHeight(int $height): void
     {
         $ratio = $height / $this->getHeight();
-        $width = $this->getWidth() * $ratio;
+        $width = (int) ($this->getWidth() * $ratio);
         $this->resize($width, $height);
     }
 
@@ -164,7 +164,7 @@ class Image
     public function resizeToWidth(int $width): void
     {
         $ratio = $width / $this->getWidth();
-        $height = $this->getHeight() * $ratio;
+        $height = (int) ($this->getHeight() * $ratio);
         $this->resize($width, $height);
     }
 
@@ -173,8 +173,8 @@ class Image
      */
     public function scale(int $scale): void
     {
-        $width = $this->getWidth() * $scale / 100;
-        $height = $this->getHeight() * $scale / 100;
+        $width = (int) ($this->getWidth() * $scale / 100);
+        $height = (int) ($this->getHeight() * $scale / 100);
         $this->resize($width, $height);
     }
 
