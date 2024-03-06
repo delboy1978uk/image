@@ -9,29 +9,21 @@ use Del\Image\Strategy\ImageTypeStrategyInterface;
 use Del\Image\Strategy\JpegStrategy;
 use Del\Image\Strategy\PngStrategy;
 use Del\Image\Strategy\WebPStrategy;
+use GdImage;
 
 class Image
 {
-    /** @var resource $image */
-    private $image;
+    private GdImage $image;
+    private ?string $fileName = null;
+    private ?ImageTypeStrategyInterface $strategy = null;
 
-    /** @var string $fileName */
-    private $fileName;
-
-    /** @var ImageTypeStrategyInterface $strategy */
-    private $strategy;
-
-    /** @var array $strategies */
-    private $strategies = [
+    private array $strategies = [
         IMAGETYPE_JPEG => JpegStrategy::class,
         IMAGETYPE_GIF => GifStrategy::class,
         IMAGETYPE_PNG => PngStrategy::class,
         IMAGETYPE_WEBP => WebPStrategy::class,
     ];
 
-    /**
-     * @param string $filename
-     */
     public function __construct(string $filename = null)
     {
         if ($filename !== null) {
@@ -40,10 +32,7 @@ class Image
         }
     }
 
-    /**
-     * @param $path
-     * @throws NotFoundException
-     */
+    /** @throws NotFoundException  */
     private function checkFileExists(string $path): void
     {
         if (!\file_exists($path)) {
@@ -51,11 +40,7 @@ class Image
         }
     }
 
-
-    /**
-     * @param string $filename
-     * @throws NotFoundException
-     */
+    /** @throws NotFoundException  */
     public function load(string $filename): void
     {
         $this->checkFileExists($filename);
@@ -64,20 +49,11 @@ class Image
         $this->image = $this->strategy->create($filename);
     }
 
-    /**
-     * @param ImageTypeStrategyInterface $imageTypeStrategy
-     */
     public function setImageStrategy(ImageTypeStrategyInterface $imageTypeStrategy): void
     {
         $this->strategy = $imageTypeStrategy;
     }
 
-
-    /**
-     *  @param string $filename
-     *  @param int $compression
-     *  @param string $permissions
-     */
     public function save(string $filename = null, int $permissions = null, int $compression = 100): void
     {
         $filename = ($filename) ?: $this->fileName;
@@ -85,10 +61,6 @@ class Image
         $this->setPermissions($filename, $permissions);
     }
 
-    /**
-     * @param string $filename
-     * @param int|null $permissions
-     */
     private function setPermissions(string $filename, ?int $permissions = null): void
     {
         if ($permissions !== null) {
@@ -96,11 +68,6 @@ class Image
         }
     }
 
-
-    /**
-     * @param bool $return either output directly
-     * @return null|string image contents
-     */
     public function output(bool $return = false): ?string
     {
         $contents = null;
@@ -118,10 +85,7 @@ class Image
         return $contents;
     }
 
-    /**
-     * @return string
-     * @throws NothingLoadedException
-     */
+    /** @throws NothingLoadedException */
     public function outputBase64Src(): string
     {
         return 'data:' . $this->getHeader() . ';base64,' . \base64_encode( $this->output(true) );
@@ -132,25 +96,16 @@ class Image
         $this->strategy->render($this->image);
     }
 
-    /**
-     * @return int
-     */
     public function getWidth(): int
     {
         return \imagesx($this->image);
     }
 
-    /**
-     * @return int
-     */
     public function getHeight(): int
     {
         return \imagesy($this->image);
     }
 
-    /**
-     * @param int $height
-     */
     public function resizeToHeight(int $height): void
     {
         $ratio = $height / $this->getHeight();
@@ -158,9 +113,6 @@ class Image
         $this->resize($width, $height);
     }
 
-    /**
-     * @param int $width
-     */
     public function resizeToWidth(int $width): void
     {
         $ratio = $width / $this->getWidth();
@@ -168,9 +120,6 @@ class Image
         $this->resize($width, $height);
     }
 
-    /**
-     * @param int $scale %
-     */
     public function scale(int $scale): void
     {
         $width = (int) ($this->getWidth() * $scale / 100);
@@ -178,16 +127,12 @@ class Image
         $this->resize($width, $height);
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     */
     public function resizeAndCrop(int $width, int $height): void
     {
         $targetRatio = $width / $height;
         $actualRatio = $this->getWidth() / $this->getHeight();
 
-        if ($targetRatio == $actualRatio) {
+        if ($targetRatio === $actualRatio) {
             // Scale to size
             $this->resize($width, $height);
         } elseif ($targetRatio > $actualRatio) {
@@ -201,12 +146,6 @@ class Image
         }
     }
 
-
-    /**
-     *  Now with added Transparency resizing feature
-     *  @param int $width
-     *  @param int $height
-     */
     public function resize(int $width, int $height): void
     {
         $newImage = \imagecreatetruecolor($width, $height);
@@ -220,14 +159,7 @@ class Image
         $this->image = $newImage;
     }
 
-
-
-
-    /**
-     * @param int $width
-     * @param int $height
-     * @param string $trim from either left or center
-     */
+    /** $trim can be either left or center */
     public function crop(int $width, int $height, string $trim = 'center'): void
     {
         $offsetX = 0;
@@ -245,12 +177,6 @@ class Image
         $this->image = $newImage;
     }
 
-    /**
-     * @param int $currentWidth
-     * @param int $width
-     * @param string $trim
-     * @return int
-     */
     private function getOffsetX(int $currentWidth, int $width, string $trim): int
     {
         $offsetX = 0;
@@ -263,12 +189,6 @@ class Image
         return (int) $offsetX;
     }
 
-    /**
-     * @param int $currentHeight
-     * @param int $height
-     * @param string $trim
-     * @return int
-     */
     private function getOffsetY(int $currentHeight, int $height, string $trim): int
     {
         $offsetY = 0;
@@ -281,10 +201,7 @@ class Image
         return (int) $offsetY;
     }
 
-    /**
-     * @return string
-     * @throws NothingLoadedException
-     */
+    /** @throws NothingLoadedException */
     public function getHeader(): string
     {
         if (!$this->strategy) {
@@ -294,9 +211,6 @@ class Image
         return $this->strategy->getContentType();
     }
 
-    /**
-     *  Frees up memory
-     */
     public function destroy(): void
     {
         \imagedestroy($this->image);
