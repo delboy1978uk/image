@@ -2,48 +2,31 @@
 
 namespace Del\Image\Strategy;
 
+use GdImage;
+
 class JpegStrategy implements ImageTypeStrategyInterface
 {
-    /**
-     * @param string $filename
-     * @return null|resource
-     */
-    public function create(string $filename)
+    public function create(string $filename): GdImage
     {
         return \imagecreatefromjpeg($filename);
     }
 
-    /**
-     * @param resource $resource
-     * @param string $filename
-     * @param int $compression
-     */
-    public function save($resource, string $filename, int $compression): void
+    public function save(GdImage $resource, string $filename, int $compression): void
     {
         \imagejpeg($resource, $filename, $compression);
     }
 
-    /**
-     * @return string
-     */
     public function getContentType(): string
     {
         return 'image/jpeg';
     }
 
-    /**
-     * @param resource $resource
-     */
-    public function render($resource): void
+    public function render(GdImage $resource): void
     {
         \imagejpeg($resource);
     }
 
-    /**
-     * @param resource $newImage
-     * @param resource $image
-     */
-    public function handleTransparency($newImage, $image): void
+    public function handleTransparency(GdImage $newImage, GdImage $image): void
     {
         // Jpeg's aren't transparent.
     }

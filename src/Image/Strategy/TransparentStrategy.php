@@ -2,13 +2,11 @@
 
 namespace Del\Image\Strategy;
 
+use GdImage;
+
 abstract class TransparentStrategy
 {
-    /**
-     * @param resource $newImage
-     * @param resource $image
-     */
-    public function handleTransparency($newImage, $image): void
+    public function handleTransparency(GdImage $newImage, GdImage $image): void
     {
         // Set blending mode as false
         imagealphablending($newImage, false);

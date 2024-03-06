@@ -2,45 +2,31 @@
 
 namespace Del\Image\Strategy;
 
+use GdImage;
+
 class GifStrategy implements ImageTypeStrategyInterface
 {
-    /**
-     * @param string $filename
-     * @return resource
-     */
-    public function create(string $filename)
+    public function create(string $filename): GdImage
     {
         return \imagecreatefromgif($filename);
     }
 
-    /**
-     * @param resource $resource
-     * @param string $filename
-     * @param int $compression
-     * @return void
-     */
-    public function save($resource, string $filename, int $compression = 100): void
+    public function save(GdImage $resource, string $filename, int $compression = 100): void
     {
         \imagegif($resource, $filename);
     }
 
-    /**
-     * @return string
-     */
     public function getContentType(): string
     {
         return 'image/gif';
     }
 
-    /**
-     * @param resource $resource
-     */
-    public function render($resource): void
+    public function render(GdImage $resource): void
     {
         \imagegif($resource);
     }
 
-    public function handleTransparency($newImage, $image): void
+    public function handleTransparency(GdImage $newImage, GdImage $image): void
     {
         // Get transparency color's index number
         $transparency = $this->getTransparencyIndex($image);
@@ -51,12 +37,7 @@ class GifStrategy implements ImageTypeStrategyInterface
         }
     }
 
-    /**
-     * @param resource $newImage
-     * @param resource $image
-     * @param int $index
-     */
-    private function prepWithCustomTransparencyIndex($newImage, $image, int $index): void
+    private function prepWithCustomTransparencyIndex(GdImage $newImage, GdImage $image, int $index): void
     {
         // Get the array of RGB vals for the transparency index
         $transparentColor = \imagecolorsforindex($image, $index);
@@ -71,11 +52,7 @@ class GifStrategy implements ImageTypeStrategyInterface
         \imagecolortransparent($newImage, $transparency);
     }
 
-    /**
-     * @param resource $image
-     * @return int
-     */
-    private function getTransparencyIndex($image): int
+    private function getTransparencyIndex(GdImage $image): int
     {
         return \imagecolortransparent($image);
     }

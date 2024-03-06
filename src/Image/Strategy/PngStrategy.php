@@ -2,40 +2,26 @@
 
 namespace Del\Image\Strategy;
 
+use GdImage;
+
 class PngStrategy extends TransparentStrategy implements ImageTypeStrategyInterface
 {
-    /**
-     * @param string $filename
-     * @return resource
-     */
-    public function create(string $filename)
+    public function create(string $filename): GdImage
     {
         return \imagecreatefrompng($filename);
     }
 
-    /**
-     * @param resource $resource
-     * @param string $filename
-     * @param int $compression
-     * @return void
-     */
-    public function save($resource, string $filename, int $compression = 100): void
+    public function save(GdImage $resource, string $filename, int $compression = 100): void
     {
         \imagepng($resource, $filename);
     }
 
-    /**
-     * @return string
-     */
     public function getContentType(): string
     {
         return 'image/png';
     }
 
-    /**
-     * @param $resource
-     */
-    public function render($resource): void
+    public function render(GdImage $resource): void
     {
         \imagealphablending($resource, true);
         \imagesavealpha($resource, true);
