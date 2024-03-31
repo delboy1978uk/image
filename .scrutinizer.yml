@@ -1,9 +1,13 @@
 tools:
     external_code_coverage: true
-checks:
-    php:
-        code_rating: true
-        duplication: true
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+    environment:
+        php: 8.2.14
 filter:
     paths:
         - src/*
