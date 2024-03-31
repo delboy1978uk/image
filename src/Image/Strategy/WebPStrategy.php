@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Del\Image\Strategy;
 
 use GdImage;
@@ -23,8 +25,8 @@ class WebPStrategy extends TransparentStrategy implements ImageTypeStrategyInter
 
     public function render(GdImage $resource): void
     {
-        imagealphablending($resource, true);
-        imagesavealpha($resource, true);
-        imagewebp($resource);
+        \imagealphablending($resource, true);
+        \imagesavealpha($resource, true);
+        \imagewebp($resource);
     }
 }
