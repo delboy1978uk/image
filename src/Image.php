@@ -26,7 +26,7 @@ class Image
         IMAGETYPE_WEBP => WebPStrategy::class,
     ];
 
-    public function __construct(string $filename = null)
+    public function __construct(?string $filename = null)
     {
         if ($filename !== null) {
             $this->fileName = $filename;
@@ -56,7 +56,7 @@ class Image
         $this->strategy = $imageTypeStrategy;
     }
 
-    public function save(string $filename = null, int $permissions = null, int $compression = 100): void
+    public function save(?string $filename = null, ?int $permissions = null, int $compression = 100): void
     {
         $filename = ($filename) ?: $this->fileName;
         $this->strategy->save($this->image, $filename, $compression);
