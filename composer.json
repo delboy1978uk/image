@@ -13,7 +13,7 @@
         "ext-gd": "*"
     },
     "require-dev": {
-        "codeception/codeception": "5.1",
+        "codeception/codeception": "^5.3",
         "codeception/module-asserts": "^3.0"
     },
     "autoload":
